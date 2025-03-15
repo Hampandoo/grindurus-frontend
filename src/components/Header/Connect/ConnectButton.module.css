@@ -1,0 +1,14 @@
+.connect-wallet {
+    background: #d354f8;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 20px;
+    width: 180px; 
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+  }

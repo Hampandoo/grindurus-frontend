@@ -4,6 +4,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reown/appkit": "^1.7.0",
+    "@reown/appkit-adapter-ethers": "^1.7.0",
+    "@reown/appkit-adapter-wagmi": "^1.7.0",
+    "@tanstack/react-query": "^5.68.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -13,6 +17,9 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",
     "react-scripts": "5.0.1",
+    "thirdweb": "^5.92.1",
+    "viem": "^2.23.11",
+    "wagmi": "^2.14.13",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -40,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
   }
 }

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import config from '../../config';
 import { ethers } from 'ethers';
+import ConnectButton from './Connect/ConnectButton';
 import './Header.css';
 import logoGrindURUS from '../../assets/images/logoGrindURUS.png';
 import logoArbitrum from '../../assets/images/logoArbitrum.png';
@@ -8,8 +9,10 @@ import logoPolygon from '../../assets/images/logoPolygon.png';
 import logoOptimism from '../../assets/images/logoOptimism.png';
 import logoBase from '../../assets/images/logoBase.png';
 
-function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNetworkConfig }) {
+// import { client } from "../../client";
+// import { ConnectButton } from "thirdweb/react";
 
+function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNetworkConfig }) {
   const [selectedNetworkId, setSelectedNetwork] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
   const [showMenu, setShowMenu] = useState(false);
@@ -119,9 +122,11 @@ function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNet
           onMouseEnter={toggleMenu}
           onMouseLeave={toggleMenu}
         >
-        <button className="connect-wallet" onClick={handleConnectWallet}>
+        {/* <ConnectButton client={client} /> */}
+        {/* <button className="connect-wallet" onClick={handleConnectWallet}>
           {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'Connect Wallet'}
-          </button>
+          </button> */}
+          <ConnectButton />
           {showMenu && (
               <div className="wallet-menu">
                 <div className="wallet-menu-item" onClick={() => handleHeaderClick('profile')}>
