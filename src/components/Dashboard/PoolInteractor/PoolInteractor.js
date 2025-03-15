@@ -329,12 +329,14 @@ function PoolInteractor({ poolId, networkConfig }) {
       const pool = new ethers.Contract(
         poolAddress,
         [
-          "function setOpReturnPercent(StrategyOp op, uint256 returnPercent) external",
+          "function setOpReturnPercent(uint8 op, uint256 returnPercent) external",
         ],
         signer
       );
       let op = selectedOpReturnPercent;
       let returnPercent = inputReturnPercent * 100;
+      console.log(op)
+      console.log(returnPercent)
       const tx = await pool.setOpReturnPercent(op, returnPercent)
       await tx.wait()
     } catch {
