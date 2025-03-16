@@ -15,7 +15,6 @@ import logoBase from '../../assets/images/logoBase.png';
 function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNetworkConfig }) {
   const [selectedNetworkId, setSelectedNetwork] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
-  const [showMenu, setShowMenu] = useState(false);
 
   const getNetworks = () => {
     const networks = Object.keys(config).reduce((acc, key, index) => {
@@ -80,18 +79,6 @@ function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNet
     setView(view);
   }
 
-  const toggleMenu = () => {
-    if (walletAddress == '') {
-      return
-    }
-    setShowMenu(!showMenu);
-  };
-
-  const handleLogoutClick = () => {
-    setWalletAddress('');
-    setShowMenu(false);
-    console.log('Wallet disconnected');
-  }
 
   return (
     <header className="header">
@@ -117,27 +104,7 @@ function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNet
             ))}
           </select>
         </div>
-        <div
-          className="wallet-menu-container"
-          onMouseEnter={toggleMenu}
-          onMouseLeave={toggleMenu}
-        >
-        {/* <ConnectButton client={client} /> */}
-        {/* <button className="connect-wallet" onClick={handleConnectWallet}>
-          {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'Connect Wallet'}
-          </button> */}
-          <ConnectButton />
-          {showMenu && (
-              <div className="wallet-menu">
-                <div className="wallet-menu-item" onClick={() => handleHeaderClick('profile')}>
-                  Profile
-                </div>
-                <div className="wallet-menu-item" onClick={() => handleLogoutClick()}>
-                  Logout
-                </div>
-              </div>
-            )}
-        </div>
+        <ConnectButton setView={setView} setPoolId={setPoolId} />
       </div>
     </header>
   );

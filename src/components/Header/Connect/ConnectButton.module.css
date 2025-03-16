@@ -12,3 +12,31 @@
     overflow: hidden;
     white-space: nowrap;
   }
+
+  .wallet-menu-container {
+    position: relative; /* Создаем контекст для выпадающего меню */
+  }
+  
+  .wallet-menu {
+    position: absolute;
+    top: 100%; /* Располагаем меню ниже кнопки */
+    right: 0; /* Выравниваем по правому краю */
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 180px;
+    z-index: 10;
+  }
+  
+  .wallet-menu-item {
+    padding: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  .wallet-menu-item:hover {
+    background-color: #f5f5f5;
+  }
