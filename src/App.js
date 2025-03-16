@@ -4,26 +4,20 @@ import config from './config';
 import Header from './components/Header/Header';
 import GRETH from './components/GRETH/GRETH.js';
 
-import PlanInfo from './components/GrinderAIAgent/GrinderAIDeposit/GrinderAIDeposit.js';
-import MintIntent from './components/GrinderAIAgent/MintIntent/MintIntent.js';
-import IntentsTable from './components/GrinderAIAgent/IntentsTable/IntentsTable.js';
 import Dashboard from './components/Dashboard/Dashboard.js';
 import GrinderAIAgent from './components/GrinderAIAgent/GrinderAIAgent.js';
+import {useAppKitNetwork} from "@reown/appkit/react";
+import {convertDecimalToHex} from "./components/utils/numbers";
 
 function App() {
-
-  const [chainId, setChainId] = useState('');
   const [networkConfig, setNetworkConfig] = useState({});
-  const [walletAddress, setWalletAddress] = useState('');
   const [view, setView] = useState('dashboard');
   const [poolId, setPoolId] = useState(-1)
-  const [plan, setPlan] = useState(0)
+  const { chainId} = useAppKitNetwork();
 
-  const onWalletConnect = (address, newChainId) => {
-    setWalletAddress(address);
-    setChainId(newChainId);
-    findAndSetNetworkConfig(newChainId); 
-  };
+  useEffect(() => {
+    findAndSetNetworkConfig(convertDecimalToHex(chainId));
+  }, [chainId]);
 
   const findAndSetNetworkConfig = (updatedChainId) => {
     const chainToUse = updatedChainId || chainId;
@@ -69,12 +63,9 @@ function App() {
 
   return (
     <div className="app-container">
-      <Header 
-        onWalletConnect={onWalletConnect} 
+      <Header
         setView={setView} 
-        setPoolId={setPoolId} 
-        setChainId={setChainId} 
-        findAndSetNetworkConfig={findAndSetNetworkConfig} 
+        setPoolId={setPoolId}
       />      
       {renderContent()}
     </div>
