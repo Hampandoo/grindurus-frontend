@@ -1,76 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import config from '../../config';
-import { ethers } from 'ethers';
+import React from 'react';
 import ConnectButton from './Connect/ConnectButton';
 import './Header.css';
 import logoGrindURUS from '../../assets/images/logoGrindURUS.png';
-import logoArbitrum from '../../assets/images/logoArbitrum.png';
-import logoPolygon from '../../assets/images/logoPolygon.png';
-import logoOptimism from '../../assets/images/logoOptimism.png';
-import logoBase from '../../assets/images/logoBase.png';
+import {useAppKit, useAppKitNetwork} from "@reown/appkit/react";
 
-// import { client } from "../../client";
-// import { ConnectButton } from "thirdweb/react";
-
-function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNetworkConfig }) {
-  const [selectedNetworkId, setSelectedNetwork] = useState(0);
-  const [walletAddress, setWalletAddress] = useState('');
-
-  const getNetworks = () => {
-    const networks = Object.keys(config).reduce((acc, key, index) => {
-      const network = config[key];
-      if (network.chainId) {
-        acc.push({
-          name: network.name,
-          chainId: network.chainId,
-          logo: network.logo,
-        });
-      }
-      return acc;
-    }, []);
-    return networks
-  };
-
-  useEffect(() => {
-    handleConnectWallet()
-  }, [onWalletConnect])
-
-  const handleConnectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setWalletAddress(accounts[0]);
-        const chainId = getNetworks()[selectedNetworkId].chainId;
-        setChainId(chainId)
-        findAndSetNetworkConfig(chainId)
-      } catch (error) {
-        console.error('MetaMask error:', error);
-      }
-    } else {
-      console.log('Metamask is not installed');
-    }
-  };
-
-  const handleNetworkChange = async (networkId) => {
-    const selectedChainId = getNetworks()[networkId].chainId;
-  
-    try {
-      // Сначала переключите сеть
-      if (window.ethereum) {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: selectedChainId }],
-        });
-      }
-  
-      // После успешного переключения обновите состояние
-      setSelectedNetwork(networkId);
-      setChainId(selectedChainId);
-      findAndSetNetworkConfig(selectedChainId);
-    } catch (error) {
-      console.error('Error while switching network:', error);
-    }
-  };
+function Header({ setView, setPoolId }) {
+  const { open } = useAppKit()
+  const { caipNetwork } = useAppKitNetwork()
+  console.log('caipNetwork', caipNetwork)
 
   const handleHeaderClick = async (view) => {
     if (view == 'dashboard') {
@@ -78,7 +15,6 @@ function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNet
     }
     setView(view);
   }
-
 
   return (
     <header className="header">
@@ -90,20 +26,12 @@ function Header({ onWalletConnect, setView, setPoolId, setChainId, findAndSetNet
       </div>
 
       <div className="header-right">
-        <img
-          src={getNetworks()[selectedNetworkId].logo}
-          alt={getNetworks()[selectedNetworkId].name}
-          className="network-logo"
-        />
-        <div className="network-select">
-          <select onChange={(e) => handleNetworkChange(e.target.value)}>
-            {getNetworks().map((network, index) => (
-              <option key={index} value={index}>
-                {network.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <button className="network-button" onClick={() => open({view: 'Networks'})}>
+          <div className="icon">
+            <img src={caipNetwork.assets.imageUrl} alt="Chain Icon"/>
+          </div>
+          <div className="network-name">{caipNetwork.name}</div>
+        </button>
         <ConnectButton setView={setView} setPoolId={setPoolId} />
       </div>
     </header>
