@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import config from '../../../config';
 import "./General.css";
 import { ethers } from "ethers";
+import {useContractService} from "../../../context/ContractContext";
 
 function General({ networkConfig }) {
 
   const [totalPools, setTotalPools] = useState('');
   const [totalDeposited, setTotalDeposited] = useState(0);
+  const { poolsNFT } = useContractService();
 
   useEffect(() => {
     fetchTotalPools();
@@ -14,15 +16,6 @@ function General({ networkConfig }) {
 
   const fetchTotalPools = async() => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const poolsnftAddress = networkConfig.poolsnft;
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
       let totalPools = await poolsNFT.totalPools()
       setTotalPools(totalPools)
     } catch (error) {

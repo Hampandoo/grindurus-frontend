@@ -26,12 +26,6 @@ export default function ConnectButton({ setView, setPoolId }) {
     }
     setShowMenu(!showMenu);
   };
-  
-  const handleLogoutClick = () => {
-    // setWalletAddress('');
-    setShowMenu(false);
-    console.log('Wallet disconnected');
-  }
 
   const handleHeaderClick = async (view) => {
     if (view == 'dashboard') {

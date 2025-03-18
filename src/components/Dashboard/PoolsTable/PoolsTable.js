@@ -1,54 +1,62 @@
 import React, { useEffect, useState } from "react";
-import config from '../../../config';
 import {ethers} from 'ethers';
 import "./PoolsTable.css";
 import logoArbitrum from "../../../assets/images/logoArbitrum.png";
+import { DataGrid } from "@mui/x-data-grid";
+import { Pagination, PaginationItem, TextField} from "@mui/material";
+import {POOL_TABLE_COLUMNS} from "./constants";
+import {useContractService} from "../../../context/ContractContext";
 
-function PoolsTable({ setPoolId, networkConfig }) {
-  const [currentPage, setCurrentPage] = useState(2);
+function PoolsTable({ setPoolId }) {
+  const [searchPoolsIds, setSearchPoolsIds] = useState([]);
   const [currentTableData, setCurrentTableData] = useState([]);
-  const [tableRowsAmount, setTableRowsAmount] = useState(10);
+  const [tableRowsAmount, setTableRowsAmount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const { poolsNFT } = useContractService();
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 5 ,
+    page: 0,
+  });
 
   useEffect(() => {
-    fetchLastPools();
-  }, []);
-
-
-  useEffect(() => {
-    if (networkConfig && networkConfig.poolsnft) {
-      fetchLastPools();
+    if (!poolsNFT) {
+      setCurrentTableData([]);
+      setTableRowsAmount(0);
+      setPaginationModel({ pageSize: 5, page: 0 });
     }
-  }, [networkConfig]);
 
-  const fetchLastPools = async () => {
+    console.log('searchPoolsIds', searchPoolsIds);
+
+    const poolsIds = getPoolsIds(paginationModel.page, paginationModel.pageSize, searchPoolsIds);
+    fetchLastPools(poolsIds);
+
+    if (!searchPoolsIds.length) {
+      fetchTotalPools();
+    }
+  }, [poolsNFT, paginationModel.page, paginationModel.pageSize, tableRowsAmount, searchPoolsIds]);
+
+  const fetchTotalPools = async () => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const poolsnftAddress = networkConfig.poolsnft;
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
-
-      let totalPools = await poolsNFT.totalPools()
-      if (totalPools > 0) {
-        let upPoolId = Number(totalPools) - 1;
-        let downPoolId = upPoolId - tableRowsAmount >= 0 ? upPoolId - tableRowsAmount : 0;
-        let poolsIds = Array.from({ length: upPoolId - downPoolId + 1 }, (_, i) => downPoolId + i);
-        // console.log(poolsIds) 
-        let poolNFTInfos = await poolsNFT.getPoolNFTInfosBy(poolsIds);
-        // console.log(poolNFTInfos)
-        const tableData = formTabledata(poolNFTInfos)
-        setCurrentTableData(tableData)
-      }
+      let totalPools = await poolsNFT.totalPools();
+      setTableRowsAmount(Number(totalPools));
     } catch (error) {
-      console.log("Failed to fetch all pools", error);
-      setCurrentTableData([])
+      console.error("Failed to fetch total pools", error);
+      setTableRowsAmount(0);
     }
+  };
 
-  }
+  const fetchLastPools = async (poolsIds) => {
+    setIsLoading(true);
+    try {
+      let poolNFTInfos = await poolsNFT.getPoolNFTInfosBy(poolsIds);
+      setCurrentTableData(formTabledata(poolNFTInfos));
+
+    } catch (error) {
+      console.error("Failed to fetch pools", error);
+      setCurrentTableData([]);
+    }
+    setIsLoading(false);
+  };
 
   const formTabledata = (poolNFTInfos) => {
     // console.log(poolNFTInfos)
@@ -90,9 +98,17 @@ function PoolsTable({ setPoolId, networkConfig }) {
     return tableData
   }
 
+  const getPoolsIds = (page, pageSize, ids) => {
+    let startIdx = page * pageSize;
+    return  ids.length > 0 ? ids : Array.from(
+      { length: Math.min(pageSize, tableRowsAmount - startIdx) },
+      (_, i) => startIdx + i
+    );
+  };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+
+  const handlePaginationChange = (event, value) => {
+    setPaginationModel((prev) => ({ ...prev, page: value - 1 }));
   };
 
   const handleViewPool = (poolId) => {
@@ -101,17 +117,6 @@ function PoolsTable({ setPoolId, networkConfig }) {
 
   const handleGrind = async (poolId) => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const poolsnftAddress = networkConfig.poolsnft;
-
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
-
       // console.log(poolsNFT)
       const estimatedGasLimit = await poolsNFT.grind.estimateGas(poolId);
       // console.log(estimatedGasLimit)
@@ -128,16 +133,6 @@ function PoolsTable({ setPoolId, networkConfig }) {
 
   const handleBuyRoyalty = async (poolId) => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const poolsnftAddress = networkConfig.poolsnft;
-
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
       const royaltyShares = await poolsNFT.calcRoyaltyPriceShares(poolId);
       const tx = await poolsNFT.buyRoyalty(poolId, {value: royaltyShares.newRoyaltyPrice});
       await tx.wait()
@@ -147,82 +142,102 @@ function PoolsTable({ setPoolId, networkConfig }) {
     }
   }
 
+  const handleSearch = async (event) => {
+    const value = event.target.value;
+    try {
+      if (value.startsWith("0x")) {
+        const response = await poolsNFT.getPoolIdsOf(value);
+        setSearchPoolsIds(response.poolIdsOwnedByPoolOwner);
+
+        return;
+      }
+
+      if (value !== '' && typeof Number(value) === 'number') {
+        setSearchPoolsIds([value]);
+        setPaginationModel({ pageSize: 5, page: 0 });
+        setTableRowsAmount(0);
+
+        return;
+      }
+      if (searchPoolsIds.length) {
+        setSearchPoolsIds([]);
+      }
+    } catch (error) {
+      console.log('failed to search', error)
+    }
+
+  }
+
+  const rows = currentTableData.map((row, index) => ({
+    id: index,
+    ...row,
+    handleBuyRoyalty,
+    handleGrind,
+    handleViewPool
+  }));
+
+  const CustomPagination = ({ className }) => {
+    if (!tableRowsAmount) return null;
+
+    return (
+      <Pagination
+        className={className}
+        count={Math.ceil(tableRowsAmount / paginationModel.pageSize)} // Загальна кількість сторінок, заміни на динамічне значення
+        page={paginationModel.page + 1}
+        onChange={handlePaginationChange}
+        renderItem={(item) => <PaginationItem {...item} />}
+      />
+    );
+  };
+
   return (
     <div className="pools-table-container">
       <h2>Pools NFTs</h2>
 
       <div className="filters-and-pagination">
+
         <div className="filters">
-        <input
-            type="text"
-            className="search-input"
+          <TextField
+            label="Search"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             placeholder="pool id / strategy id / address"
-        />
-        <button className="search-button">🔍</button>
-        </div>
-        <div className="pagination">
-        <button onClick={() => handlePageChange(currentPage - 1)}>←</button>
-        {[1, 2, 3, 4].map((page) => (
-            <button
-            key={page}
-            className={currentPage === page ? "active-page" : ""}
-            onClick={() => handlePageChange(page)}
-            >
-            {page}
-            </button>
-        ))}
-        <button onClick={() => handlePageChange(currentPage + 1)}>→</button>
+            onChange={handleSearch}
+          />
         </div>
       </div>
-      <table className="pools-table">
-        <thead>
-          <tr>
-            <th>Network</th>
-            <th>Pool ID</th>
-            <th>Quote Token + Base Token</th>
-            <th>Yield Profit + Trade Profit</th>
-            <th>Start</th>
-            <th>APR</th>
-            <th>Buy Royalty</th>
-            <th>Grind Pool</th>
-            <th>View Pool</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentTableData.map((row, index) => (
-            <tr key={index}>
-              <td><img src={row.networkIcon} alt="Network Icon" className="network-icon" /></td>
-              <td>{row.poolId}</td>
-              <td>{row.quoteToken}</td>
-              <td>{row.yieldProfit}<br />{row.tradeProfit}</td>
-              <td>{row.start}</td>
-              <td>{row.apr}</td>
-              <td>
-                <button 
-                  className="buy-royalty-button"
-                  onClick={() => handleBuyRoyalty(row.poolId, row.buyRoyaltyPrice)}  
-                >
-                  Buy Royalty<br />
-                  {row.buyRoyaltyPrice} ETH
-                </button>
-              </td>
-              <td>
-                <button 
-                  className="grind-pool-button"
-                  onClick={() => handleGrind(row.poolId)}
-                >
-                  Grind Pool
-                </button>
-              </td>
-              <td>
-                <button className="view-pool-button" onClick={() => handleViewPool(row.poolId)}>
-                  View Pool
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div style={{height: "fit-content", width: "100%"}}>
+        <DataGrid
+          rows={rows}
+          columns={POOL_TABLE_COLUMNS}
+          pagination={tableRowsAmount > 0}
+          paginationMode="server"
+          loading={isLoading}
+          paginationModel={paginationModel}
+          hideFooterSelectedRowCount
+          slots={{ pagination: CustomPagination }}
+          getRowHeight={() => "auto"} // Авто-висота для адаптації
+          sx={{
+            "& .MuiDataGrid-cell": {
+              display: "flex",
+              alignItems: "center",
+              borderRight: "1px solid rgba(224, 224, 224, 1)",
+              height: "auto !important", // Примушує збільшення висоти
+              minHeight: "80px !important", // Мінімальна висота рядка
+            },
+            "& .MuiDataGrid-row": {
+              borderBottom: "1px solid rgba(224, 224, 224, 1)",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              borderBottom: "2px solid rgba(224, 224, 224, 1)",
+            },
+            "& .MuiDataGrid-footerContainer": {
+              justifyContent: "center",
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }
