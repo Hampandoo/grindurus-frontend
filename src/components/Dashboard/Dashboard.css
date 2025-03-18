@@ -2,6 +2,9 @@
   display: flex;
   width: 80%;
   margin-top: 30px;
+  background: linear-gradient(to right, #fff 0%, #f9f4f6 100%);
+  border-radius: 12px;
+  padding: 10px 0 30px;
 }
   
 .main-container-left {
@@ -10,6 +13,8 @@
 
 .main-container-right {
   flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 

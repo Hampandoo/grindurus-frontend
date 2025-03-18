@@ -53,7 +53,7 @@ export default function ConnectButton({ setView, setPoolId }) {
       onMouseLeave={toggleMenu}
     >
       <button className={styles['connect-wallet']} onClick={() => open()}>{renderAccount(isConnected, address)}</button>
-      {showMenu && (
+      {showMenu && address && (
         <div className={styles['wallet-menu']}>
           <div className={styles['wallet-menu-item']} onClick={() => handleHeaderClick('profile')}>
             Profile
