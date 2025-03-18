@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import config from '../../../config';
 import {ethers} from 'ethers';
+import { Select, MenuItem, FormControl, TextField, Button } from "@mui/material";
 import './MintPoolNFT.css';
 import logoUSDT from '../../../assets/images/logoUSDT.png';
 import logoUSDC from '../../../assets/images/logoUSDC.png';
@@ -11,6 +12,8 @@ import logoWBTC from '../../../assets/images/logoWETH.png';
 function MintPoolNFT({ networkConfig }) {
 
   const [lookOnchain, setLookOnchain] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+
   const [strategies, setStrategies] = useState([]);
   const [quoteTokens, setQuoteTokens] = useState([]);
   const [baseTokens, setBaseTokens] = useState([]);
@@ -117,6 +120,8 @@ function MintPoolNFT({ networkConfig }) {
 
       await tx.wait();
 
+      setIsApproved(true);
+
     } catch (error) {
       alert("Failed to approve tokens.");
     }
@@ -166,13 +171,21 @@ function MintPoolNFT({ networkConfig }) {
       <div className="form-group">
         <div className="label-container">Strategy</div>
         <div className="select-with-icon">
-          <select value={selectedStrategyId} onChange={(e) => setSelectedStrategyId(e.target.value)}>
+        <FormControl fullWidth>
+          {/* <InputLabel>Виберіть опцію</InputLabel> */}
+          <Select
+            value={selectedStrategyId}
+            sx={{
+              height: "42px",
+              borderRadius: "8px"
+            }}
+            onChange={(e) => setSelectedStrategyId(e.target.value)}
+          >
             {networkConfig.strategies.map((strategy, index) => (
-              <option key={index} value={index}>
-                {strategy.id}) {strategy.description}
-              </option>
+              <MenuItem key={index} value={index}>{strategy.description}</MenuItem>
             ))}
-          </select>
+          </Select>
+        </FormControl>
         </div>
       </div>
       <div className="form-group">
@@ -185,16 +198,21 @@ function MintPoolNFT({ networkConfig }) {
             alt={networkConfig.quoteTokens[selectedQuoteTokenId]?.symbol}
             className="token-icon"
           />
-          <select
-            value={selectedQuoteTokenId}
-            onChange={(e) => setQuoteTokenId(e.target.value)}
-          >
-            {networkConfig.quoteTokens.map((tokenInfo, index) => (
-              <option key={index} value={index}>
-                {tokenInfo.symbol}
-              </option>
-            ))}
-          </select>
+          <FormControl fullWidth>
+            {/* <InputLabel>Виберіть опцію</InputLabel> */}
+            <Select
+              value={selectedQuoteTokenId}
+              sx={{
+                height: "42px",
+                borderRadius: "8px"
+              }}
+              onChange={(e) => setQuoteTokenId(e.target.value)}
+            >
+              {networkConfig.quoteTokens.map((tokenInfo, index) => (
+                <MenuItem key={index} value={index}>{tokenInfo.symbol}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
       </div>
       <div className="form-group">
@@ -207,16 +225,21 @@ function MintPoolNFT({ networkConfig }) {
           alt={networkConfig.baseTokens[selectedBaseTokenId]?.symbol}
           className="token-icon"
         />
-        <select
-          value={selectedBaseTokenId}
-          onChange={(e) => setBaseTokenId(e.target.value)}
-        >
-          {networkConfig.baseTokens.map((tokenInfo, index) => (
-            <option key={index} value={index}>
-              {tokenInfo.symbol}
-            </option>
-          ))}
-        </select>
+        <FormControl fullWidth>
+          {/* <InputLabel>Виберіть опцію</InputLabel> */}
+          <Select
+            value={selectedBaseTokenId}
+            sx={{
+              height: "42px",
+              borderRadius: "8px"
+            }}
+            onChange={(e) => setBaseTokenId(e.target.value)}
+          >
+            {networkConfig.baseTokens.map((tokenInfo, index) => (
+              <MenuItem key={index} value={index}>{tokenInfo.symbol}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
       </div>
       <div className="form-group">
@@ -227,14 +250,22 @@ function MintPoolNFT({ networkConfig }) {
           <img
             src={networkConfig.quoteTokens[selectedQuoteTokenId]?.logo}
             alt={networkConfig.quoteTokens[selectedQuoteTokenId]?.symbol}
-            className="token-icon"
+            className="token-icon token-last-icon"
           />
-          <input
-            value={quoteTokenAmount}
-            onChange={(e) => setQuoteTokenAmount(e.target.value)}
-            placeholder="100500"
-            className="input-field"
-          />
+          <FormControl fullWidth>
+            <TextField
+              value={quoteTokenAmount}
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                    height: "42px",
+                    borderRadius: "8px"
+                  },
+              }}
+              placeholder="0"
+              onChange={(e) => setQuoteTokenAmount(e.target.value)}
+            />
+          </FormControl>
           <button
             type="button"
             className="max-button"
@@ -245,12 +276,43 @@ function MintPoolNFT({ networkConfig }) {
         </div>
       </div>
       <div className="button-group">
-        <button className="approve-button" onClick={handleApprove}>
-          Approve Quote Token
-        </button>
-        <button className="mint-button" onClick={handleMint}>
-          Mint Pool
-        </button>
+        {!isApproved ? (
+          <Button
+            className="approve-button"
+            variant="contained"
+            disabled={quoteTokenAmount <= 0}
+            sx={{
+              borderRadius: "8px",
+              fontWeight: 700,
+              minWidth: "unset",
+              backgroundColor: "#f7e1fc",
+              color: "#c556db",
+              textTransform: "none",
+              fontSize: "20px",
+              lineHeight: 1,
+              height: "42px"
+            }}
+            onClick={handleApprove}
+          >Approve Quote Token</Button>
+        ) : (
+          <Button
+            className="mint-button"
+            variant="contained"
+            disabled={quoteTokenAmount <= 0}
+            sx={{
+              borderRadius: "8px",
+              fontWeight: 700,
+              minWidth: "unset",
+              backgroundColor: "#c1fbba",
+              color: "#006f16",
+              textTransform: "none",
+              fontSize: "20px",
+              lineHeight: 1,
+              height: "42px"
+            }}
+            onClick={handleMint}
+          >Mint Pool</Button>
+        )}
       </div>
     </div>
   );
