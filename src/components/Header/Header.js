@@ -7,7 +7,6 @@ import {useAppKit, useAppKitNetwork} from "@reown/appkit/react";
 function Header({ setView, setPoolId }) {
   const { open } = useAppKit()
   const { caipNetwork } = useAppKitNetwork()
-  console.log('caipNetwork', caipNetwork)
 
   const handleHeaderClick = async (view) => {
     if (view == 'dashboard') {
