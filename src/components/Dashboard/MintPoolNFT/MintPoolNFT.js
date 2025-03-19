@@ -3,21 +3,13 @@ import config from '../../../config';
 import {ethers} from 'ethers';
 import { Select, MenuItem, FormControl, TextField, Button } from "@mui/material";
 import './MintPoolNFT.css';
-import logoUSDT from '../../../assets/images/logoUSDT.png';
-import logoUSDC from '../../../assets/images/logoUSDC.png';
-import logoWETH from '../../../assets/images/logoWETH.png';
-import logoWBTC from '../../../assets/images/logoWETH.png';
+import { useContractService } from '../../../context/ContractContext';
 
 
 function MintPoolNFT({ networkConfig }) {
-
-  const [lookOnchain, setLookOnchain] = useState(false);
+  const { signer } = useContractService();
+  
   const [isApproved, setIsApproved] = useState(false);
-
-  const [strategies, setStrategies] = useState([]);
-  const [quoteTokens, setQuoteTokens] = useState([]);
-  const [baseTokens, setBaseTokens] = useState([]);
-  const [strategyDescriptions, setStrategyDescriptions] = useState([]);
 
   const [selectedStrategyId, setSelectedStrategyId] = useState(0);
   const [selectedQuoteTokenId, setQuoteTokenId] = useState(0);
@@ -29,55 +21,52 @@ function MintPoolNFT({ networkConfig }) {
 
   }, [networkConfig]);
 
-  const fetchRegistryData = async () => {
+  // const fetchRegistryData = async () => {
     
-    if (!lookOnchain) {
-      return;
-    }
-    if (!window.ethereum) {
-      alert('MetaMask is not installed.');
-      return;
-    }
+  //   if (!lookOnchain) {
+  //     return;
+  //   }
+  //   if (!window.ethereum) {
+  //     alert('MetaMask is not installed.');
+  //     return;
+  //   }
 
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+  //   try {
+  //     const provider = new ethers.BrowserProvider(window.ethereum);
+  //     const signer = await provider.getSigner();
 
-      // Адрес реестра из config
-      const registryAddress = networkConfig.registry;
+  //     // Адрес реестра из config
+  //     const registryAddress = networkConfig.registry;
 
-      // ABI интерфейса IRegistry
-      const registryABI = [
-        'function getStrategyIds() external view returns (uint256, uint16[] memory)',
-        'function getStrategiesDescriptions(uint16[] memory strategyIds) external view returns (string[] memory)',
-        'function getQuoteTokens() external view returns (uint256, address[] memory)',
-        'function getBaseTokens() external view returns (uint256, address[] memory)'
-      ];
+  //     // ABI интерфейса IRegistry
+  //     const registryABI = [
+  //       'function getStrategyIds() external view returns (uint256, uint16[] memory)',
+  //       'function getStrategiesDescriptions(uint16[] memory strategyIds) external view returns (string[] memory)',
+  //       'function getQuoteTokens() external view returns (uint256, address[] memory)',
+  //       'function getBaseTokens() external view returns (uint256, address[] memory)'
+  //     ];
 
-      const registryContract = new ethers.Contract(registryAddress, registryABI, signer);
+  //     const registryContract = new ethers.Contract(registryAddress, registryABI, signer);
 
-      const [strategyCount, strategyIds] = await registryContract.getStrategyIds();
-      console.log(strategyIds)
-      const strategyIdsArray = Array.from(Object.values(strategyIds)).filter((id) => typeof id === 'bigint');
-      const strategyDescriptions = await registryContract.getStrategiesDescriptions(strategyIdsArray);
+  //     const [strategyCount, strategyIds] = await registryContract.getStrategyIds();
+  //     console.log(strategyIds)
+  //     const strategyIdsArray = Array.from(Object.values(strategyIds)).filter((id) => typeof id === 'bigint');
+  //     const strategyDescriptions = await registryContract.getStrategiesDescriptions(strategyIdsArray);
 
-      const [quoteTokenCount, quoteTokens] = await registryContract.getQuoteTokens();
-      const [baseTokenCount, baseTokens] = await registryContract.getBaseTokens();
+  //     const [quoteTokenCount, quoteTokens] = await registryContract.getQuoteTokens();
+  //     const [baseTokenCount, baseTokens] = await registryContract.getBaseTokens();
 
-      setStrategies(strategyIds.map((id, index) => ({ id: id.toString(), description: strategyDescriptions[index] })));
-      setQuoteTokens(quoteTokens.map((address) => ({ address, symbol: `Token ${address}` })));
-      setBaseTokens(baseTokens.map((address) => ({ address, symbol: `Token ${address}` })));
-    } catch (error) {
-      console.error('Failed to fetch data from the registry contract:', error);
-      alert('Failed to fetch data from the contract.');
-    }
-  };
+  //     setStrategies(strategyIds.map((id, index) => ({ id: id.toString(), description: strategyDescriptions[index] })));
+  //     setQuoteTokens(quoteTokens.map((address) => ({ address, symbol: `Token ${address}` })));
+  //     setBaseTokens(baseTokens.map((address) => ({ address, symbol: `Token ${address}` })));
+  //   } catch (error) {
+  //     console.error('Failed to fetch data from the registry contract:', error);
+  //     alert('Failed to fetch data from the contract.');
+  //   }
+  // };
 
   const handleMaxDepositQuoteToken = async () => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
       const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
       const quoteToken = new ethers.Contract(
         quoteTokenInfo.address,
