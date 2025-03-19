@@ -8,7 +8,7 @@ import { useContractService } from '../../../context/ContractContext';
 
 function MintPoolNFT({ networkConfig }) {
   const { signer } = useContractService();
-  
+
   const [isApproved, setIsApproved] = useState(false);
 
   const [selectedStrategyId, setSelectedStrategyId] = useState(0);
@@ -16,54 +16,9 @@ function MintPoolNFT({ networkConfig }) {
   const [selectedBaseTokenId, setBaseTokenId] = useState(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = useState('');
 
-
   useEffect(() => {
 
   }, [networkConfig]);
-
-  // const fetchRegistryData = async () => {
-    
-  //   if (!lookOnchain) {
-  //     return;
-  //   }
-  //   if (!window.ethereum) {
-  //     alert('MetaMask is not installed.');
-  //     return;
-  //   }
-
-  //   try {
-  //     const provider = new ethers.BrowserProvider(window.ethereum);
-  //     const signer = await provider.getSigner();
-
-  //     // Адрес реестра из config
-  //     const registryAddress = networkConfig.registry;
-
-  //     // ABI интерфейса IRegistry
-  //     const registryABI = [
-  //       'function getStrategyIds() external view returns (uint256, uint16[] memory)',
-  //       'function getStrategiesDescriptions(uint16[] memory strategyIds) external view returns (string[] memory)',
-  //       'function getQuoteTokens() external view returns (uint256, address[] memory)',
-  //       'function getBaseTokens() external view returns (uint256, address[] memory)'
-  //     ];
-
-  //     const registryContract = new ethers.Contract(registryAddress, registryABI, signer);
-
-  //     const [strategyCount, strategyIds] = await registryContract.getStrategyIds();
-  //     console.log(strategyIds)
-  //     const strategyIdsArray = Array.from(Object.values(strategyIds)).filter((id) => typeof id === 'bigint');
-  //     const strategyDescriptions = await registryContract.getStrategiesDescriptions(strategyIdsArray);
-
-  //     const [quoteTokenCount, quoteTokens] = await registryContract.getQuoteTokens();
-  //     const [baseTokenCount, baseTokens] = await registryContract.getBaseTokens();
-
-  //     setStrategies(strategyIds.map((id, index) => ({ id: id.toString(), description: strategyDescriptions[index] })));
-  //     setQuoteTokens(quoteTokens.map((address) => ({ address, symbol: `Token ${address}` })));
-  //     setBaseTokens(baseTokens.map((address) => ({ address, symbol: `Token ${address}` })));
-  //   } catch (error) {
-  //     console.error('Failed to fetch data from the registry contract:', error);
-  //     alert('Failed to fetch data from the contract.');
-  //   }
-  // };
 
   const handleMaxDepositQuoteToken = async () => {
     try {
