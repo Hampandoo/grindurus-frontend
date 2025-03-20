@@ -3,81 +3,73 @@ import config from '../../../config';
 import {ethers} from 'ethers';
 import { Select, MenuItem, FormControl, TextField, Button } from "@mui/material";
 import './MintPoolNFT.css';
-import logoUSDT from '../../../assets/images/logoUSDT.png';
-import logoUSDC from '../../../assets/images/logoUSDC.png';
-import logoWETH from '../../../assets/images/logoWETH.png';
-import logoWBTC from '../../../assets/images/logoWETH.png';
+import { useContractService } from '../../../context/ContractContext';
+import { useAppKitAccount } from "@reown/appkit/react"
 
 
 function MintPoolNFT({ networkConfig }) {
+  const { provider } = useContractService();
+  const { address } = useAppKitAccount();
 
-  const [lookOnchain, setLookOnchain] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
-
-  const [strategies, setStrategies] = useState([]);
-  const [quoteTokens, setQuoteTokens] = useState([]);
-  const [baseTokens, setBaseTokens] = useState([]);
-  const [strategyDescriptions, setStrategyDescriptions] = useState([]);
+  const [allowance, setAllowance] = useState(0);
 
   const [selectedStrategyId, setSelectedStrategyId] = useState(0);
   const [selectedQuoteTokenId, setQuoteTokenId] = useState(0);
   const [selectedBaseTokenId, setBaseTokenId] = useState(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = useState('');
 
+  // Loading button states
+  const [waitApproving, setWaitApproving] = useState(false);
+  const [waitMint, setWaitMint] = useState(false);
 
+  // Provider added as dependency for checking allowance after user connect wallet
   useEffect(() => {
-
-  }, [networkConfig]);
-
-  const fetchRegistryData = async () => {
-    
-    if (!lookOnchain) {
-      return;
+    checkAllowance();
+  }, [networkConfig, selectedQuoteTokenId, provider]);
+  useEffect(() => {
+    if (allowance > 0 && quoteTokenAmount <= allowance) {
+      setIsApproved(true);
+    } else if (allowance > 0) {
+      setIsApproved(false);
+    } else {
+      setIsApproved(false);
     }
-    if (!window.ethereum) {
-      alert('MetaMask is not installed.');
-      return;
-    }
+  }, [quoteTokenAmount]);
 
+  const checkAllowance = async () => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      if (!provider) {
+        return;
+      }
+        const signer = await provider.getSigner();
+        const userAddress = signer.getAddress();
+        const spenderAddress = networkConfig.poolsnft;
 
-      // Адрес реестра из config
-      const registryAddress = networkConfig.registry;
+        const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
 
-      // ABI интерфейса IRegistry
-      const registryABI = [
-        'function getStrategyIds() external view returns (uint256, uint16[] memory)',
-        'function getStrategiesDescriptions(uint16[] memory strategyIds) external view returns (string[] memory)',
-        'function getQuoteTokens() external view returns (uint256, address[] memory)',
-        'function getBaseTokens() external view returns (uint256, address[] memory)'
-      ];
+        const quoteToken = new ethers.Contract(
+            quoteTokenInfo.address,
+            ["function allowance(address owner, address spender) external view returns (uint256)"],
+            signer
+        );
 
-      const registryContract = new ethers.Contract(registryAddress, registryABI, signer);
-
-      const [strategyCount, strategyIds] = await registryContract.getStrategyIds();
-      console.log(strategyIds)
-      const strategyIdsArray = Array.from(Object.values(strategyIds)).filter((id) => typeof id === 'bigint');
-      const strategyDescriptions = await registryContract.getStrategiesDescriptions(strategyIdsArray);
-
-      const [quoteTokenCount, quoteTokens] = await registryContract.getQuoteTokens();
-      const [baseTokenCount, baseTokens] = await registryContract.getBaseTokens();
-
-      setStrategies(strategyIds.map((id, index) => ({ id: id.toString(), description: strategyDescriptions[index] })));
-      setQuoteTokens(quoteTokens.map((address) => ({ address, symbol: `Token ${address}` })));
-      setBaseTokens(baseTokens.map((address) => ({ address, symbol: `Token ${address}` })));
+        const allowanceRaw = await quoteToken.allowance(userAddress, spenderAddress);
+        const allowanceFormatted = ethers.formatUnits(allowanceRaw, quoteTokenInfo.decimals);
+        setAllowance(allowanceFormatted);
     } catch (error) {
-      console.error('Failed to fetch data from the registry contract:', error);
-      alert('Failed to fetch data from the contract.');
+        console.error("Error checking allowance:", error);
+        // alert("Failed to check token allowance.");
     }
-  };
+} ;
 
   const handleMaxDepositQuoteToken = async () => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      if (!provider) {
+        return;
+      }
+      setWaitApproving(true);
       const signer = await provider.getSigner();
-
       const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
       const quoteToken = new ethers.Contract(
         quoteTokenInfo.address,
@@ -91,16 +83,17 @@ function MintPoolNFT({ networkConfig }) {
       setQuoteTokenAmount(balance)
     } catch {
       alert("Failed to fetch balance");
+    } finally {
+      setWaitApproving(false);
     }
   }
 
   const handleApprove = async () => {
-    if (!window.ethereum) {
-      alert("MetaMask is not installed.");
-      return;
-    }
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      if (!provider) {
+        return;
+      }
+      setWaitApproving(true);
       const signer = await provider.getSigner();
 
       const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
@@ -119,22 +112,21 @@ function MintPoolNFT({ networkConfig }) {
       const tx = await quoteToken.approve(spenderAddress, amount);
 
       await tx.wait();
-
       setIsApproved(true);
 
     } catch (error) {
       alert("Failed to approve tokens.");
+    } finally {
+      setWaitApproving(false);
     }
-
   };
 
   const handleMint = async () => {
-    if (!window.ethereum) {
-      alert("MetaMask is not installed.");
-      return;
-    }
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      if (!provider) {
+        return;
+      }
+      setWaitMint(true);
       const signer = await provider.getSigner();
 
       const poolsNFTAddress = networkConfig.poolsnft;
@@ -162,6 +154,8 @@ function MintPoolNFT({ networkConfig }) {
 
     } catch (error) {
       console.error("Error during approve:", error);
+    } finally {
+      setWaitMint(false);
     }
   };
 
@@ -279,37 +273,56 @@ function MintPoolNFT({ networkConfig }) {
         {!isApproved ? (
           <Button
             className="approve-button"
-            variant="contained"
+            variant={waitApproving ? 'variant' : 'contained'}
             disabled={quoteTokenAmount <= 0}
             sx={{
               borderRadius: "8px",
               fontWeight: 700,
               minWidth: "unset",
-              backgroundColor: "#f7e1fc",
+              backgroundColor: waitApproving ? "transparent" : "#f7e1fc",
+              borderColor: waitApproving ? "#f7e1fc" : "transparent",
+              borderWidth: waitApproving ? "2px" : "0",
+              "&.Mui-disabled": {
+                backgroundColor: "rgba(1,1,1,0)",
+                borderStyle: "solid",
+                borderColor: quoteTokenAmount <= 0 ? "rgba(51, 51, 51, 0.1)" : "transparent",
+                borderWidth: quoteTokenAmount <= 0 ? "2px" : "0",
+              },
+              borderStyle: "solid",
               color: "#c556db",
               textTransform: "none",
               fontSize: "20px",
               lineHeight: 1,
               height: "42px"
             }}
+            loading={waitApproving}
             onClick={handleApprove}
           >Approve Quote Token</Button>
         ) : (
           <Button
             className="mint-button"
-            variant="contained"
-            disabled={quoteTokenAmount <= 0}
+            variant={waitMint ? 'variant' : 'contained'}
+            disabled={quoteTokenAmount <= 0 || allowance < quoteTokenAmount}
             sx={{
               borderRadius: "8px",
               fontWeight: 700,
               minWidth: "unset",
-              backgroundColor: "#c1fbba",
+              backgroundColor: waitMint ? "transparent" : "#c1fbba",
+              borderColor: waitMint ? "#c1fbba" : "transparent",
+              borderWidth: waitMint ? "2px" : "0",
+              "&.Mui-disabled": {
+                backgroundColor: "rgba(1,1,1,0)",
+                borderStyle: "solid",
+                borderColor: quoteTokenAmount <= 0 ? "rgba(51, 51, 51, 0.1)" : "transparent",
+                borderWidth: quoteTokenAmount <= 0 ? "2px" : "0",
+              },
               color: "#006f16",
               textTransform: "none",
               fontSize: "20px",
               lineHeight: 1,
               height: "42px"
             }}
+            loading={waitMint}
             onClick={handleMint}
           >Mint Pool</Button>
         )}
