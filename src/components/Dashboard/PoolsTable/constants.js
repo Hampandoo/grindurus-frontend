@@ -1,5 +1,6 @@
 import {Button} from "@mui/material";
 import React from "react";
+import Visible from "../../../assets/images/visible.png";
 
 export const POOL_TABLE_COLUMNS = [
   {
@@ -15,8 +16,33 @@ export const POOL_TABLE_COLUMNS = [
     className: "centered-cell",
     renderCell: (params) => <img src={params.value} alt="Network Icon" style={{ width: 30, height: 30 }} />
   },
-  { field: "poolId", headerName: "Pool ID", minWidth: 80, flex: 1, align: "center", headerAlign: "center", sortable: false, disableColumnMenu: true, resizable: false },
-  { field: "quoteToken", headerName: "Quote Token + Base Token", width: 200, flex: 1, align: "center", headerAlign: "center", sortable: false, disableColumnMenu: true, resizable: false },
+  {
+    field: "viewPool",
+    headerName: "View Pool",
+    minWidth: 80,
+    flex: 1,
+    align: "center",
+    headerAlign: "center",
+    sortable: false,
+    disableColumnMenu: true,
+    resizable: false,
+    renderCell: (params) => (
+      <img src={Visible} alt='visible' onClick={() => params.row.handleViewPool(params.row.poolId)} />
+    )
+  },
+  {
+    field: "poolId",
+    headerName: "Pool ID",
+    minWidth: 80,
+    flex: 1,
+    align: "center",
+    headerAlign: "center",
+    sortable: false,
+    disableColumnMenu: true,
+    resizable: false,
+    editable: false,
+  },
+  { field: "quoteToken", headerName: "Quote Token + Base Token", minWidth: 200, flex: 1, align: "center", headerAlign: "center", sortable: false, disableColumnMenu: true, resizable: false },
   {
     field: "yieldProfit",
     headerName: "Yield Profit + Trade Profit",
@@ -75,24 +101,5 @@ export const POOL_TABLE_COLUMNS = [
       </Button>
     )
   },
-  {
-    field: "viewPool",
-    headerName: "View Pool",
-    minWidth: 150,
-    flex: 1,
-    align: "center",
-    headerAlign: "center",
-    sortable: false,
-    disableColumnMenu: true,
-    resizable: false,
-    renderCell: (params) => (
-      <Button
-        variant="outlined"
-        onClick={() => params.row.handleViewPool(params.row.poolId)}
-      >
-        View
-      </Button>
-    )
-  }
 ];
 

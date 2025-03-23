@@ -10,17 +10,21 @@ h2 {
   color: #c556db;
 }
 
-.filters-and-pagination {
-  display: flex; /* Выравнивание в строку */
-  justify-content: space-between; /* Распределение элементов по краям */
-  align-items: center; /* Вертикальное выравнивание по центру */
-  margin-bottom: 20px; /* Отступ между фильтрами и таблицей */
+.title-and-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .filters {
   display: flex; /* Горизонтальное выравнивание поиска */
   align-items: center;
   gap: 10px; /* Отступ между элементами */
+}
+
+.search-input {
+  height: 42px;
 }
 
 .network {
