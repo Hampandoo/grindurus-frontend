@@ -238,7 +238,7 @@ function PoolsTable({ setPoolId }) {
         </div>
       </div>
 
-      <div style={{width: "100%"}}>
+      <div style={{ width: "100%"}}>
         <DataGrid
           rows={rows}
           columns={POOL_TABLE_COLUMNS}
@@ -250,6 +250,7 @@ function PoolsTable({ setPoolId }) {
           hideFooterSelectedRowCount
           onRowDoubleClick={(params) => handleViewPool(params.row.poolId)}
           slots={{ pagination: CustomPagination }}
+          style={{maxHeight: "800px"}}
           getRowHeight={() => "auto"}
           sx={{
             "& .MuiDataGrid-cell": {
