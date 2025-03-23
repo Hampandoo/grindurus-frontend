@@ -3,37 +3,46 @@ import {ethers} from 'ethers';
 import "./PoolsTable.css";
 import logoArbitrum from "../../../assets/images/logoArbitrum.png";
 import { DataGrid } from "@mui/x-data-grid";
-import { Pagination, PaginationItem, TextField} from "@mui/material";
+import {IconButton, InputAdornment, Pagination, PaginationItem, TextField} from "@mui/material";
 import {POOL_TABLE_COLUMNS} from "./constants";
 import {useContractService} from "../../../context/ContractContext";
+import debounce from 'lodash.debounce';
+
+const DEFAULT_PAGINATION_PARAMS = {
+  pageSize: 5 ,
+  page: 0,
+}
 
 function PoolsTable({ setPoolId }) {
   const [searchPoolsIds, setSearchPoolsIds] = useState([]);
   const [currentTableData, setCurrentTableData] = useState([]);
   const [tableRowsAmount, setTableRowsAmount] = useState(0);
+  const [showPagination, setShowPagination] = useState(true);
+  const [preparedPoolIds, setPreparedPoolIds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { poolsNFT } = useContractService();
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 5 ,
-    page: 0,
-  });
+  const { poolsNFT, isConnected } = useContractService();
+  const [paginationModel, setPaginationModel] = useState(DEFAULT_PAGINATION_PARAMS);
 
   useEffect(() => {
-    if (!poolsNFT) {
-      setCurrentTableData([]);
-      setTableRowsAmount(0);
-      setPaginationModel({ pageSize: 5, page: 0 });
+    const ids = getPoolsIds(paginationModel, searchPoolsIds);
+    setPreparedPoolIds(ids);
+  }, [paginationModel, searchPoolsIds]);
+
+  useEffect(() => {
+    if (!poolsNFT || !preparedPoolIds.length) {
+      return;
     }
 
-    console.log('searchPoolsIds', searchPoolsIds);
+    fetchTotalPools();
+    fetchLastPools(preparedPoolIds);
 
-    const poolsIds = getPoolsIds(paginationModel.page, paginationModel.pageSize, searchPoolsIds);
-    fetchLastPools(poolsIds);
+  }, [poolsNFT, preparedPoolIds]);
 
-    if (!searchPoolsIds.length) {
-      fetchTotalPools();
+  useEffect(() => {
+    if(!isConnected) {
+      resetTableData();
     }
-  }, [poolsNFT, paginationModel.page, paginationModel.pageSize, tableRowsAmount, searchPoolsIds]);
+  }, [isConnected]);
 
   const fetchTotalPools = async () => {
     try {
@@ -41,7 +50,7 @@ function PoolsTable({ setPoolId }) {
       setTableRowsAmount(Number(totalPools));
     } catch (error) {
       console.error("Failed to fetch total pools", error);
-      setTableRowsAmount(0);
+      resetTableData();
     }
   };
 
@@ -52,8 +61,7 @@ function PoolsTable({ setPoolId }) {
       setCurrentTableData(formTabledata(poolNFTInfos));
 
     } catch (error) {
-      console.error("Failed to fetch pools", error);
-      setCurrentTableData([]);
+      resetTableData();
     }
     setIsLoading(false);
   };
@@ -98,10 +106,12 @@ function PoolsTable({ setPoolId }) {
     return tableData
   }
 
-  const getPoolsIds = (page, pageSize, ids) => {
+  const getPoolsIds = (paginationParams, ids) => {
+    const { page, pageSize } = paginationParams;
     let startIdx = page * pageSize;
+
     return  ids.length > 0 ? ids : Array.from(
-      { length: Math.min(pageSize, tableRowsAmount - startIdx) },
+      { length: pageSize },
       (_, i) => startIdx + i
     );
   };
@@ -113,6 +123,12 @@ function PoolsTable({ setPoolId }) {
 
   const handleViewPool = (poolId) => {
     setPoolId(poolId)
+  }
+
+  const resetTableData = () => {
+    setCurrentTableData([]);
+    setTableRowsAmount(0);
+    setPaginationModel({ pageSize: 5, page: 0 });
   }
 
   const handleGrind = async (poolId) => {
@@ -142,31 +158,34 @@ function PoolsTable({ setPoolId }) {
     }
   }
 
-  const handleSearch = async (event) => {
+  const handleSearch = debounce(async (event) => {
     const value = event.target.value;
     try {
+      let searchIds = [];
+
       if (value.startsWith("0x")) {
         const response = await poolsNFT.getPoolIdsOf(value);
-        setSearchPoolsIds(response.poolIdsOwnedByPoolOwner);
-
-        return;
+        searchIds = Object.values(response.poolIdsOwnedByPoolOwner).map(Number);
       }
 
-      if (value !== '' && typeof Number(value) === 'number') {
-        setSearchPoolsIds([value]);
-        setPaginationModel({ pageSize: 5, page: 0 });
-        setTableRowsAmount(0);
+      else if (value !== '' && typeof Number(value) === 'number') {
+        searchIds = [value];
+      }
 
-        return;
+      if (searchIds.length) {
+        setShowPagination(false);
+        setPaginationModel(DEFAULT_PAGINATION_PARAMS);
+      } else {
+        setShowPagination(true);
       }
-      if (searchPoolsIds.length) {
-        setSearchPoolsIds([]);
-      }
+
+      setSearchPoolsIds(searchIds);
+
     } catch (error) {
-      console.log('failed to search', error)
+      resetTableData();
+      console.log('failed to search', error);
     }
-
-  }
+  }, 300);
 
   const rows = currentTableData.map((row, index) => ({
     id: index,
@@ -177,12 +196,12 @@ function PoolsTable({ setPoolId }) {
   }));
 
   const CustomPagination = ({ className }) => {
-    if (!tableRowsAmount) return null;
+    if (!showPagination || !rows.length) return null;
 
     return (
       <Pagination
         className={className}
-        count={Math.ceil(tableRowsAmount / paginationModel.pageSize)} // Загальна кількість сторінок, заміни на динамічне значення
+        count={Math.ceil(tableRowsAmount / paginationModel.pageSize)}
         page={paginationModel.page + 1}
         onChange={handlePaginationChange}
         renderItem={(item) => <PaginationItem {...item} />}
@@ -192,39 +211,56 @@ function PoolsTable({ setPoolId }) {
 
   return (
     <div className="pools-table-container">
-      <h2>Pools NFTs</h2>
-
-      <div className="filters-and-pagination">
+      <div className="title-and-filters">
+        <h2>Pools NFTs</h2>
 
         <div className="filters">
           <TextField
-            label="Search"
             variant="outlined"
-            fullWidth
-            margin="normal"
-            placeholder="pool id / strategy id / address"
+            placeholder="pool id / address"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                height: "42px",
+                borderRadius: "8px"
+              },
+            }}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                >
+                  {}
+                </IconButton>
+              </InputAdornment>
+            }
             onChange={handleSearch}
           />
         </div>
       </div>
-      <div style={{height: "fit-content", width: "100%"}}>
+
+      <div style={{width: "100%"}}>
         <DataGrid
           rows={rows}
           columns={POOL_TABLE_COLUMNS}
-          pagination={tableRowsAmount > 0}
+          pagination={showPagination}
           paginationMode="server"
           loading={isLoading}
+          rowCount={tableRowsAmount}
           paginationModel={paginationModel}
           hideFooterSelectedRowCount
+          onRowDoubleClick={(params) => handleViewPool(params.row.poolId)}
           slots={{ pagination: CustomPagination }}
-          getRowHeight={() => "auto"} // Авто-висота для адаптації
+          getRowHeight={() => "auto"}
           sx={{
             "& .MuiDataGrid-cell": {
               display: "flex",
               alignItems: "center",
               borderRight: "1px solid rgba(224, 224, 224, 1)",
-              height: "auto !important", // Примушує збільшення висоти
-              minHeight: "80px !important", // Мінімальна висота рядка
+              height: "auto !important",
+              minHeight: "80px !important",
+            },
+            "& .MuiDataGrid-cell:focus": {
+              outline: 'none',
             },
             "& .MuiDataGrid-row": {
               borderBottom: "1px solid rgba(224, 224, 224, 1)",
