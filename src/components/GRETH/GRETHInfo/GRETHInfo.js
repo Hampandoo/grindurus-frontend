@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './GRETHInfo.css';
+import { useAppKitAccount } from "@reown/appkit/react";
+import config from "../../../config";
+import { useContractService } from '../../../context/ContractContext';
+import { ethers } from 'ethers'; // ✅ імпорт ethers
 
 const pieChartData = [
   { name: 'Category A', value: 30, color: '#FF6384' },
@@ -32,19 +36,65 @@ function PieChart({ data }) {
   );
 }
 
+const grethAbi = [
+  "function totalGrinded() view returns (uint256)",
+  "function totalSupply() view returns (uint256)",
+  "function balanceOf(address) view returns (uint256)",
+];
+
+const poolsNftAbi = [
+  "function grETH() view returns (address)",
+];
+
 function GRETH() {
-  const [burnAmount, setBurnAmount] = useState('');
-  const [selectedToken, setSelectedToken] = useState('');
+  const { provider } = useContractService();
+  const { address: userAddress } = useAppKitAccount();
 
-  const handleMaxClick = () => {
-    setBurnAmount('100'); // Предполагаем, что максимум 100
-  };
+  const [grethAddress, setGrethAddress] = useState(null);
+  const [totalGrinded, setTotalGrinded] = useState(null);
+  const [totalSupply, setTotalSupply] = useState(null);
+  const [balance, setBalance] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Burn amount:', burnAmount);
-    console.log('Selected token:', selectedToken);
-  };
+  useEffect(() => {
+    if (!provider) return;
+
+    const poolsContract = new ethers.Contract(config.arbitrum.poolsnft, poolsNftAbi, provider); // ✅
+    
+    async function loadGrethAddress() {
+      try {
+        const address = await poolsContract.grETH();
+        setGrethAddress(address);
+      } catch (err) {
+        console.error("Failed to get grETH address", err);
+      }
+    }
+
+    loadGrethAddress();
+  }, [provider]);
+
+  useEffect(() => {
+    if (!provider || !grethAddress) return;
+
+    const grethContract = new ethers.Contract(grethAddress, grethAbi, provider); // ✅
+
+    async function loadData() {
+      try {
+        const [grinded, supply, userBal] = await Promise.all([
+          grethContract.totalGrinded(),
+          grethContract.totalSupply(),
+          userAddress ? grethContract.balanceOf(userAddress) : Promise.resolve(null),
+        ]);
+
+        setTotalGrinded(ethers.formatUnits(grinded, 18));
+        setTotalSupply(ethers.formatUnits(supply, 18));
+        setBalance(userBal ? ethers.formatUnits(userBal, 18) : null);
+      } catch (err) {
+        console.error("Failed to fetch grETH data", err);
+      }
+    }
+
+    loadData();
+  }, [grethAddress, userAddress, provider]);
 
   return (
     <div className="greth-info-container">
@@ -53,10 +103,9 @@ function GRETH() {
           <div className="card-content">
             <h2 className="card-title">GRETH Information</h2>
             <div className="info-list">
-              <p>Total Grinded grETH: 1000</p>
-              <p>Total Supply grETH: 5000</p>
-              <p>Your Balance: 100</p>
-              <p>Your Share: 2%</p>
+              <p>Total Grinded: {totalGrinded?.toString()}</p>
+              <p>Total Supply: {totalSupply?.toString()}</p>
+              <p>Your Balance: {balance?.toString() ?? "0.0"}</p>
             </div>
             <div className="chart-container">
               <PieChart data={pieChartData} />
