@@ -4,18 +4,16 @@ import {ethers} from 'ethers';
 import { Select, MenuItem, FormControl, TextField, Button } from "@mui/material";
 import './MintPoolNFT.css';
 import { useContractService } from '../../../context/ContractContext';
-import { useAppKitAccount } from "@reown/appkit/react"
 
 
 function MintPoolNFT({ networkConfig }) {
   const { provider } = useContractService();
-  const { address } = useAppKitAccount();
 
   const [isApproved, setIsApproved] = useState(false);
   const [allowance, setAllowance] = useState(0);
 
   const [selectedStrategyId, setSelectedStrategyId] = useState(0);
-  const [selectedQuoteTokenId, setQuoteTokenId] = useState(0);
+  const [selectedQuoteTokenId, setQuoteTokenId] = useState(1);
   const [selectedBaseTokenId, setBaseTokenId] = useState(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = useState('');
 
@@ -142,11 +140,10 @@ function MintPoolNFT({ networkConfig }) {
         signer
       );
       const quoteTokenAmountRaw = ethers.parseUnits(quoteTokenAmount, quoteTokenInfo.decimals)
-      console.log(strategyId)
       const tx = await poolsNFT.mint(
         strategyId,
-        quoteTokenInfo.address,
         baseTokenInfo.address,
+        quoteTokenInfo.address,
         quoteTokenAmountRaw
       );
 
@@ -184,33 +181,6 @@ function MintPoolNFT({ networkConfig }) {
       </div>
       <div className="form-group">
         <div className="label-container">
-          Quote Token
-        </div>
-        <div className="select-with-icon">
-          <img
-            src={networkConfig.quoteTokens[selectedQuoteTokenId]?.logo}
-            alt={networkConfig.quoteTokens[selectedQuoteTokenId]?.symbol}
-            className="token-icon"
-          />
-          <FormControl fullWidth>
-            {/* <InputLabel>Виберіть опцію</InputLabel> */}
-            <Select
-              value={selectedQuoteTokenId}
-              sx={{
-                height: "42px",
-                borderRadius: "8px"
-              }}
-              onChange={(e) => setQuoteTokenId(e.target.value)}
-            >
-              {networkConfig.quoteTokens.map((tokenInfo, index) => (
-                <MenuItem key={index} value={index}>{tokenInfo.symbol}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-      </div>
-      <div className="form-group">
-        <div className="label-container">
           Base Token
         </div>
         <div className="select-with-icon">
@@ -235,6 +205,33 @@ function MintPoolNFT({ networkConfig }) {
           </Select>
         </FormControl>
       </div>
+      </div>
+      <div className="form-group">
+        <div className="label-container">
+          Quote Token
+        </div>
+        <div className="select-with-icon">
+          <img
+            src={networkConfig.quoteTokens[selectedQuoteTokenId]?.logo}
+            alt={networkConfig.quoteTokens[selectedQuoteTokenId]?.symbol}
+            className="token-icon"
+          />
+          <FormControl fullWidth>
+            {/* <InputLabel>Виберіть опцію</InputLabel> */}
+            <Select
+              value={selectedQuoteTokenId}
+              sx={{
+                height: "42px",
+                borderRadius: "8px"
+              }}
+              onChange={(e) => setQuoteTokenId(e.target.value)}
+            >
+              {networkConfig.quoteTokens.map((tokenInfo, index) => (
+                <MenuItem key={index} value={index}>{tokenInfo.symbol}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
       </div>
       <div className="form-group">
         <div className="label-container">

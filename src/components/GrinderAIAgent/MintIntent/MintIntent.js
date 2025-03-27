@@ -1,11 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import {ethers} from 'ethers';
+import { useContractService } from '../../../context/ContractContext';
+import { ethers } from 'ethers';
+import config from '../../../config';
+import { Select, MenuItem, FormControl, TextField, Button } from "@mui/material";
 import './MintIntent.css';
 
+
 function MintIntent({ networkConfig }) {
-  const [intentPeriod, setIntentPeriod] = useState(6); // Значение по умолчанию
-  const [receiver, setReceiver] = useState('');
-  const [price, setPrice] = useState(0.1); // Значение цены по умолчанию
+  const { provider } = useContractService();
+
+  const GRIND_AMOUNT_MAP = [1, 5, 20, 100];
+  const ETH = '0x0000000000000000000000000000000000000000';
+
+  const [defaultRecieverWalletAdress, setDefaultRecieverWalletAdress] = useState('');
+  const [recieverWalletAdress, setRecieverWalletAdress] = useState('');
+  const [price, setPrice] = useState(0.1);
+  const [grindAmount, setGrindAmount] = useState(1);
+
+  // Form State
+  const [isChangedAddress, setIsChangedAddress] = useState(false);
+
+  
+  const setUserWalletAddress = async () => {
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    setDefaultRecieverWalletAdress(address);
+  }
+  useEffect(() => {
+    if (!provider) return;
+
+    // After connect - Set user wallet address as default for handle burnTo function (recieves 3 arguments, wallet as last arg)
+    setUserWalletAddress();
+  }, [provider]);
+
+  const getIntentNFTContract = async () => {
+    if (!provider) {
+      console.error('Provider not found');
+      return null;
+    }
+    const signer = await provider.getSigner();
+    const grethAddress = networkConfig.intentNFT;
+    return new ethers.Contract(grethAddress, networkConfig.intentABI, signer);
+  }
+  
 
   useEffect(() => {
     const fetchPayment = async () => {
@@ -13,31 +50,17 @@ function MintIntent({ networkConfig }) {
       setPrice(paymentAmount);
     };
     setTimeout(fetchPayment, 500);
-  }, [intentPeriod])
+  }, [grindAmount])
 
   const calcPayment = async () => {
-    if (!window.ethereum) {
+    if (!provider) {
       alert("MetaMask is not installed.");
       return;
     }
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const intentsNFTContract = await getIntentNFTContract();
 
-      const intentsNFTAddress = networkConfig.intentsnft;
-
-      const intentsNFT = new ethers.Contract(
-        intentsNFTAddress,
-        [
-          "function calcPayment(address paymentToken, uint256 period) public view returns(uint256)",
-        ],
-        signer
-      );
-      const eth = '0x0000000000000000000000000000000000000000'
-      const secondsInMonth = 2_678_400
-
-      const intentPeriodInSeconds = intentPeriod * secondsInMonth
-      const paymentAmountRaw = await intentsNFT.calcPayment(eth, intentPeriodInSeconds);
+      const paymentAmountRaw = await intentsNFTContract.calcPayment(ETH, grindAmount);
       const paymentAmount = ethers.formatUnits(paymentAmountRaw, 18);
       return paymentAmount
     } catch (error) {
@@ -47,53 +70,24 @@ function MintIntent({ networkConfig }) {
   }
 
   const handleMint = async () => {
-    if (!window.ethereum) {
+    if (!provider) {
       alert("MetaMask is not installed.");
       return;
     }
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const intentsNFTContract = await getIntentNFTContract();
 
-      const intentsNFTAddress = networkConfig.intentsnft;
+      const paymentAmountRaw = await intentsNFTContract.calcPayment(ETH, grindAmount);
 
-      const intentsNFT = new ethers.Contract(
-        intentsNFTAddress,
-        [
-          "function mintTo(address paymentToken, address to, uint256 period) public payable override returns (uint256 intentId)",
-          "function calcPayment(address paymentToken, uint256 period) public view returns(uint256)",
-        ],
-        signer
-      );
-      const eth = '0x0000000000000000000000000000000000000000'
-      const secondsInMonth = 2_678_400
-
-      const intentPeriodInSeconds = intentPeriod * secondsInMonth
-      const paymentAmountRaw = await intentsNFT.calcPayment(eth, intentPeriodInSeconds);
+      const reciever = isChangedAddress ? recieverWalletAdress : defaultRecieverWalletAdress;
       
-      const tx = await intentsNFT.mintTo(eth, receiver, intentPeriodInSeconds)
-      await tx.wait()      
+      const tx = await intentsNFTContract.mintTo(ETH, reciever, grindAmount, { value: paymentAmountRaw });
+      await tx.wait();
     
     } catch (error) {
       console.error("Error during approve:", error);
-      
     }
   };
-
-  const handleReceiverMyAddress = () => {
-    if (!window.ethereum) {
-      alert("MetaMask is not installed.");
-      return;
-    }
-    const fetchAddress = async () => {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      return signer.address
-    }
-    fetchAddress().then((address) => {
-      setReceiver(address)
-    })
-  }
 
   return (
     <div className="mint-intent-container">
@@ -101,29 +95,37 @@ function MintIntent({ networkConfig }) {
       <div className="mint-intent-description">Intent for grinderAI to grind all pools related to your wallet</div>
 
       <div className="intent-period">
-        <label className="label">Intent Period ~ ({intentPeriod} months)</label>
-        <input
-          type="range"
-          min="1"
-          max="12"
-          value={intentPeriod}
-          onChange={(e) => setIntentPeriod(e.target.value)}
-          className="slider"
-        />
+        <label className="label">Intent Amount ~ ({grindAmount} times)</label>
+        <FormControl fullWidth>
+          {/* <InputLabel>Виберіть опцію</InputLabel> */}
+          <Select
+            value={grindAmount}
+            sx={{
+              height: "42px",
+              borderRadius: "8px"
+            }}
+            onChange={(e) => setGrindAmount(e.target.value)}
+          >
+            {GRIND_AMOUNT_MAP.map((value) => (
+              <MenuItem key={value} value={value}>{value}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <div className="slider-value"></div>
       </div>
 
       <div className="form-group">
-        <label className="label">Receiver 
-          <button className="receiver-button" onClick={handleReceiverMyAddress}>My Address</button>
-          </label>
-        <input
+        <label className="label">Reciever wallet (optional)
+          {/* <button className="receiver-button" onClick={handleReceiverMyAddress}>My Address</button> */}
+          <input value={isChangedAddress} onChange={(e) => setIsChangedAddress(e.target.checked)} type="checkbox" />
+        </label>
+        {isChangedAddress && <input
           type="text"
-          value={receiver}
-          onChange={(e) => setReceiver(e.target.value)}
-          placeholder="Enter receiver address"
+          value={recieverWalletAdress}
+          onChange={(e) => setRecieverWalletAdress(e.target.value)}
+          placeholder="Enter reciever address"
           className="input"
-        />
+        />}
       </div>
 
       <div className="price-container">

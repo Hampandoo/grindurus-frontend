@@ -10,6 +10,7 @@ import { Tabs, Tab, Box, Typography } from "@mui/material";
 import GRETHBurn from '../GRETH/GRETHBurn/GRETHBurn.js';
 import GRETHInfo from '../GRETH/GRETHInfo/GRETHInfo.js';
 import GrinderAIAgent from '../GrinderAIAgent/GrinderAIAgent.js';
+import GRETHMint from "../GRETH/GRETHMint/GRETHMint.js";
 
 function TabPanel({ children, value, index }) {
   return (
@@ -53,7 +54,7 @@ function Dashboard({ poolId, setPoolId, networkConfig}) {
                 </Tabs  >
                 <TabPanel value={mainTab} index={0}>
                   <div className='main-container-left'>
-                    <GRETHInfo />
+                    <GRETHInfo networkConfig={networkConfig} />
                     {/* <General networkConfig={networkConfig} /> */}
                   </div>
                   <div className='main-container-right'>
@@ -66,14 +67,18 @@ function Dashboard({ poolId, setPoolId, networkConfig}) {
                     >
                       <Tabs value={formTab} onChange={handleChangeFormTab} centered>
                         <Tab label="Mint Pool" />
-                        <Tab label="Burn" />
+                        <Tab label="GRETH Burn" />
+                        <Tab label="GRETH Mint" />
                       </Tabs  >
               
                       <TabPanel value={formTab} index={0}>
                         <MintPoolNFT networkConfig={networkConfig} />
                       </TabPanel>
                       <TabPanel value={formTab} index={1}>
-                        <GRETHBurn />
+                        <GRETHBurn networkConfig={networkConfig} />
+                      </TabPanel>
+                      <TabPanel value={formTab} index={2}>
+                        <GRETHMint networkConfig={networkConfig} />
                       </TabPanel>
                     </Box>
                   </div>

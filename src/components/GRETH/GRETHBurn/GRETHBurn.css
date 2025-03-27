@@ -27,6 +27,11 @@
   flex-direction: column;
   gap: 4px;
 }
+.form-group-w-icon {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
 
 label {
   font-size: 0.9rem;
