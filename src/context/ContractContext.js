@@ -12,6 +12,7 @@ export const ContractProvider = ({ children,}) => {
   const [signer, setSigner] = useState(null);
   const [networkConfig, setNetworkConfig] = useState({});
   const [poolsNFT, setPoolsNFT] = useState(null);
+  const [visiblePoolIds, setVisiblePoolIds] = useState([]);
 
   const { walletProvider } = useAppKitProvider('eip155');
   const { isConnected } = useAppKitAccount();
@@ -24,6 +25,12 @@ export const ContractProvider = ({ children,}) => {
       provider.getSigner().then(setSigner).catch(console.error);
     }
   }, [provider]);
+
+  useEffect(() => {
+    if (!visiblePoolIds.length && poolsNFT) {
+      getDefaultVisiblePool();
+    }
+  }, [poolsNFT])
 
   useEffect(() => {
     const chainToUse = convertDecimalToHex(chainId);
@@ -60,8 +67,32 @@ export const ContractProvider = ({ children,}) => {
   }, [signer, networkConfig, poolsAbi, provider, signer]);
 
 
+  const getDefaultVisiblePool = async () => {
+    let totalPools = await poolsNFT.totalPools();
+
+    let startIdx = 0;
+    const maxIdx = Math.min(5, Number(totalPools));
+
+    setVisiblePoolIds(Array.from(
+      { length: maxIdx - startIdx },
+      (_, i) => startIdx + i
+    ))
+  }
+
+
   return (
-    <ContractContext.Provider value={{ provider, poolsNFT, networkConfig, setNetworkConfig, isConnected, signer }}>
+    <ContractContext.Provider
+      value={{
+        provider,
+        poolsNFT,
+        networkConfig,
+        setNetworkConfig,
+        isConnected,
+        signer,
+        visiblePoolIds,
+        setVisiblePoolIds,
+      }}
+    >
       {children}
     </ContractContext.Provider>
   );

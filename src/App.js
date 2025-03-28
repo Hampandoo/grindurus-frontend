@@ -6,12 +6,11 @@ import Dashboard from './components/Dashboard/Dashboard.js';
 import {useContractService} from "./context/ContractContext";
 import {
   Route,
-  Routes
+  Routes,
 } from "react-router-dom";
-import PoolInfo from "./components/Dashboard/PoolInfo/PoolInfo";
-import PoolInteractor from "./components/Dashboard/PoolInteractor/PoolInteractor";
 import GrinderAIChat from "./components/GrinderAIAgent/GrinderAIChat/GrinderAIChat";
 import ConnectWallet from "./components/ConnectWalletBanner/ConnectWalletBanner";
+import {Pool} from "./components/Pool/Pool";
 
 const RouterGuard = ({ networkConfig, isConnected, children }) => {
   if (!networkConfig || Object.keys(networkConfig).length === 0) {
@@ -29,16 +28,6 @@ function App() {
   const [poolId, setPoolId] = useState(-1)
   const { networkConfig, isConnected } = useContractService();
 
-  const renderContent = () => {
-    if (!networkConfig || Object.keys(networkConfig).length === 0) {
-      return <div>Loading network configuration...</div>;
-    }
-
-    return (
-        <Dashboard poolId={poolId} setPoolId={setPoolId} networkConfig={networkConfig} />
-    );
-  };
-
   return (
     <div className="app-container">
       <Header
@@ -53,18 +42,11 @@ function App() {
           }/>
 
           <Route path="/pool/:poolId" element={
-            <>
-              <div className='main-container-left'>
-                <PoolInfo/>
-              </div>
-              <div className='main-container-right'>
-                <PoolInteractor/>
-              </div>
-            </>
+            <Pool />
           }/>
         </Routes>
 
-        <GrinderAIChat />
+        <GrinderAIChat/>
       </div>
     </div>
   );

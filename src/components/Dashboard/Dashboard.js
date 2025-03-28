@@ -124,7 +124,7 @@ function Dashboard({ poolId, setPoolId, networkConfig}) {
       </Box>
 
       <div className="pools-table-wrapper">
-        <PoolsTable setPoolId={setPoolId} networkConfig={networkConfig}/>
+        <PoolsTable />
       </div>
       </div>
     );
