@@ -14,14 +14,14 @@ const DEFAULT_PAGINATION_PARAMS = {
   page: 0,
 }
 
-function PoolsTable({ setPoolId }) {
+function PoolsTable() {
   const [searchPoolsIds, setSearchPoolsIds] = useState([]);
   const [currentTableData, setCurrentTableData] = useState([]);
   const [tableRowsAmount, setTableRowsAmount] = useState(0);
   const [showPagination, setShowPagination] = useState(true);
   const [preparedPoolIds, setPreparedPoolIds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { poolsNFT, isConnected } = useContractService();
+  const { poolsNFT, isConnected, setVisiblePoolIds } = useContractService();
   const [paginationModel, setPaginationModel] = useState(DEFAULT_PAGINATION_PARAMS);
   const navigate = useNavigate();
 
@@ -43,6 +43,7 @@ function PoolsTable({ setPoolId }) {
     }
 
     fetchLastPools(preparedPoolIds);
+    setVisiblePoolIds(preparedPoolIds);
 
   }, [poolsNFT, preparedPoolIds]);
 
