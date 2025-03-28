@@ -25,7 +25,7 @@ function Header({ setPoolId }) {
         </Link>
         <nav class="header-navigation">
           <ul class="header-menu menu">
-            <li class="menu-item"><Link to="/dashboard" class="menu-link">Dashboard</Link></li>
+            <li class="menu-item"><Link to="/" class="menu-link">Dashboard</Link></li>
             <li class="menu-item"><Link to="/greth" class="menu-link">grETH</Link></li>
             <li class="menu-item"><Link to="grinder-ai" class="menu-link">GrinderAI</Link></li>
           </ul>

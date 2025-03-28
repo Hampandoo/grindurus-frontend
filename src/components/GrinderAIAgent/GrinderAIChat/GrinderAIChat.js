@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import "./GrinderAIChat.css";
 
 const predefinedResponses = [
-  "Интересный вопрос! Давайте разберем это подробнее.",
-  "Я понимаю вашу точку зрения. Вот что я думаю по этому поводу...",
-  "Это сложная тема. Вот несколько ключевых моментов, которые стоит учесть.",
-  "Спасибо за ваш вопрос. Вот что я могу сказать на эту тему...",
-  "Я не уверен, но могу предположить следующее...",
+  "Interesting question! Let's break this down in more detail.",
+  "I understand your point of view. Here's what I think about it...",
+  "This is a complex topic. Here are a few key points to consider.",
+  "Thank you for your question. Here's what I can say on this topic...",
+  "I'm not sure, but I can make the following assumption..."
 ];
 
 function GrinderAIChat() {

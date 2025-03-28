@@ -218,7 +218,7 @@ function PoolsTable() {
   };
 
   return (
-    <div className="pools-table-container">
+    <>
       <div class="pools-table-header">
         <h2 class="pools-table-title title">Explore All Pools</h2>
         <div class="pools-table-search search">
@@ -241,10 +241,23 @@ function PoolsTable() {
           style={{maxHeight: "800px"}}
           getRowHeight={() => "auto"}
           sx={{
+            "& .MuiDataGrid-topContainer": {
+              padding: "0"
+            },
+            "& .MuiDataGrid-columnHeader": {
+              backgroundColor: "black", // Черный фон для заголовков
+              color: "white", // Белый цвет текста
+              fontWeight: "bold", // Опционально: жирный текст
+              borderRight: "1px solid white"
+            },
             "& .MuiDataGrid-columnHeader:focus": {
-
+              outline: "none",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "black", // Фон заголовков
             },
             "& .MuiDataGrid-cell": {
+              color: "white",
               display: "flex",
               alignItems: "center",
               borderRight: "1px solid rgba(224, 224, 224, 1)",
@@ -257,16 +270,13 @@ function PoolsTable() {
             "& .MuiDataGrid-row": {
               borderBottom: "1px solid rgba(224, 224, 224, 1)",
             },
-            "& .MuiDataGrid-columnHeaders": {
-              borderBottom: "2px solid rgba(224, 224, 224, 1)",
-            },
             "& .MuiDataGrid-footerContainer": {
               justifyContent: "center",
             },
           }}
         />
       </div>
-    </div>
+    </>
   );
 }
 

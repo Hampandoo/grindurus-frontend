@@ -165,3 +165,32 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
   
 }
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #933DC9 #2f2f2f;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #933DC9;
+  border-radius: 6px;
+  border: 3px solid #53118F;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #53118F;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #2f2f2f;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-track:hover {
+  background-color: #333333;
+}

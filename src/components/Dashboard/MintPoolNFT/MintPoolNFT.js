@@ -182,7 +182,7 @@ function MintPoolNFT({ networkConfig }) {
               alignItems: "center",
               borderRadius: "8px",
               color: "white",
-              backgroundColor: "#1a1a1a",
+              backgroundColor: "black",
               border: "1px solid white",
               '& .MuiSelect-icon': {
                 color: 'white',
@@ -191,7 +191,7 @@ function MintPoolNFT({ networkConfig }) {
               disableScrollLock: true,
               PaperProps: {
                 sx: {
-                  backgroundColor: 'black',
+                  backgroundColor: '#1a1a1a',
                   color: 'white',
                   border: "1px solid white",
                   borderRadius: "8px",

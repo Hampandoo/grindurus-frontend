@@ -2,6 +2,33 @@
   font-size: 16px;
 }
 
+.pools-table-header {
+  display: flex;
+  gap: 50px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pools-table-header:not(:last-child) {
+  margin-bottom: 50px;
+}
+
+.search {
+  flex-grow: 1;
+	display: flex;
+	border: 1px solid #fff;
+	border-radius: 8px;
+}
+
+.search-input, .search-button {
+  border: 0;
+  padding: 15px;
+}
+
+.search-button {
+  border-left: 1px solid #fff;
+}
+
 .pools-table {
   width: 100%;
   border-collapse: separate; /* Меняем с collapse на separate, чтобы закругления работали */
