@@ -2,17 +2,19 @@
 .greth-burn {
   width: 100%; /* Фиксированная ширина окна */
   padding: 20px;
-  background: #ffffff;
+  background: black;
+  border: 1px solid white;
   border-radius: 15px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
   font-family: Arial, sans-serif;
   box-sizing: border-box;
 }
     
 .greth-burn-title {
-  font-size: 24px;
+  font-size: 30px;
+  margin-bottom: 15px;
   font-weight: bold;
-  color: #333;
+  color: white;
   text-align: center;
 }
 
@@ -34,8 +36,8 @@
 }
 
 label {
-  font-size: 0.9rem;
-  color: #555;
+  font-size: 18px;
+  color: white;
   font-weight: bold;
 }
 
@@ -46,7 +48,7 @@ label {
 .input-field {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid white;
   border-radius: 6px;
   font-size: 1rem;
 }
@@ -56,7 +58,7 @@ label {
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #eaeaea;
+  background-color: black;
   border: none;
   padding: 4px 8px;
   font-size: 0.9rem;
@@ -69,13 +71,13 @@ label {
 }
 
 .estimated-text {
-  font-size: 0.9rem;
-  color: #666;
-  text-align: left;
+  font-size: 16px;
+  color: white;
+  text-align: start;
 }
 
 .submit-button {
-  background-color: #007bff;
+  background-color: #C1FBBA;
   color: white;
   border: none;
   padding: 10px;
@@ -86,5 +88,5 @@ label {
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  /* background-color: #0056b3; */
 }

@@ -4,7 +4,7 @@ import { useContractService } from '../../../context/ContractContext';
 import { ethers } from 'ethers';
 import config from '../../../config';
 
-import { Button, FormControl, TextField, Select, MenuItem } from '@mui/material';
+import { Button, FormControl, TextField, Select, MenuItem, Checkbox } from '@mui/material';
 
 function GRETHBurn({ networkConfig }) {
   const { provider } = useContractService();
@@ -83,7 +83,7 @@ function GRETHBurn({ networkConfig }) {
   return (
     <div className="greth-burn">
         <div className="greth-burn-title">
-          You can exchange grETH to token
+          Exchange grETH to Token
         </div>
         <form className="exchange-form">
           <div className="form-group">
@@ -95,9 +95,15 @@ function GRETHBurn({ networkConfig }) {
                   value={burnAmount}
                   variant="outlined"
                   sx={{
-                    "& .MuiOutlinedInput-root": {
+                      "& .MuiOutlinedInput-root": {
                         height: "42px",
-                        borderRadius: "8px"
+                        borderRadius: "8px",
+                        color: "white",
+                        backgroundColor: "black",
+                        border: "1px solid white",
+                        '& .MuiSelect-icon': {
+                          color: 'white',
+                        }
                       },
                   }}
                   placeholder="0"
@@ -115,10 +121,21 @@ function GRETHBurn({ networkConfig }) {
             </div>
           </div>
 
-          <input value={isChangedToken} onChange={(e) => setIsChangedToken(e.target.checked)} type="checkbox" />
-          {isChangedToken && <div className="form-group">
-            <label htmlFor="token-select">Token to earn (optional)</label>
-            <div className="form-group-w-icon">
+          <div className="form-group-1">
+          <label htmlFor="token-select">
+          <Checkbox
+              checked={isChangedToken}
+              onChange={(e) => setIsChangedToken(e.target.checked)}
+              sx={{
+                color: 'white',
+                '&.Mui-checked': {
+                  color: 'white',
+                },
+              }}
+            />
+            Token to earn (optional)
+          </label>
+            {isChangedToken && <div className="form-group-w-icon">
               <img
                 src={networkConfig.quoteTokens[selectedTokenId]?.logo}
                 alt={networkConfig.quoteTokens[selectedTokenId]?.symbol}
@@ -130,7 +147,13 @@ function GRETHBurn({ networkConfig }) {
                   value={selectedTokenId}
                   sx={{
                     height: "42px",
-                    borderRadius: "8px"
+                    borderRadius: "8px",
+                    color: "white",
+                    backgroundColor: "black",
+                    border: "1px solid white",
+                    '& .MuiSelect-icon': {
+                      color: 'white',
+                    }
                   }}
                   onChange={(e) => selectedTokenIdId(e.target.value)}
                 >
@@ -139,53 +162,73 @@ function GRETHBurn({ networkConfig }) {
                   ))}
                 </Select>
               </FormControl>
-            </div>
-          </div>}
+            </div> }
+          </div>
 
-          <input value={isChangedAddress} onChange={(e) => setIsChangedAddress(e.target.checked)} type="checkbox" />
-          {isChangedAddress && <div className="form-group">
-            <label htmlFor="token-select">Reciever wallet (optional)</label>
-            <FormControl fullWidth>
+          <div className="form-group-1">
+            <label htmlFor="token-select">
+            <Checkbox
+              checked={isChangedAddress}
+              onChange={(e) => setIsChangedAddress(e.target.checked)}
+              sx={{
+                color: 'white',
+                '&.Mui-checked': {
+                  color: 'white',
+                },
+              }}
+            />
+              Reciever wallet (optional)
+            </label>
+            {isChangedAddress && <FormControl fullWidth>
               <TextField
                 id="burn-amount"
                 value={recieverWalletAdress}
                 variant="outlined"
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                      height: "42px",
-                      borderRadius: "8px"
-                    },
-                }}
+                    height: "42px",
+                    borderRadius: "8px",
+                    color: "white",
+                    backgroundColor: "black",
+                    border: "1px solid white",
+                    '& .MuiSelect-icon': {
+                      color: 'white',
+                    }
+                  },
+              }}
                 placeholder="0x..."
                 className="input-field"
                 onChange={(e) => setRecieverWalletAdress(e.target.value)}
               />
-            </FormControl>
-          </div>}
+            </FormControl>}
+          </div>
 
           <p className="estimated-text">Estimated token amount: <span className="font-medium">{`${estimatedTokenAmount}`}</span></p>
           <Button
             className="submit-button"
+            disabled={burnAmount <= 0}
             // variant={waitMint ? 'variant' : 'contained'}
             // disabled={quoteTokenAmount <= 0 || allowance < quoteTokenAmount}
             sx={{
               borderRadius: "8px",
               fontWeight: 700,
               minWidth: "unset",
-              // backgroundColor: waitMint ? "transparent" : "#c1fbba",
-              // borderColor: waitMint ? "#c1fbba" : "transparent",
-              // borderWidth: waitMint ? "2px" : "0",
-              "&.Mui-disabled": {
-                backgroundColor: "rgba(1,1,1,0)",
-                borderStyle: "solid",
-                // borderColor: quoteTokenAmount <= 0 ? "rgba(51, 51, 51, 0.1)" : "transparent",
-                // borderWidth: quoteTokenAmount <= 0 ? "2px" : "0",
-              },
-              color: "#006f16",
+              backgroundColor: "#f7e1fc",
+              borderColor: "transparent",
+              borderWidth: "0",
+              borderStyle: "solid",
+              color: "#c556db",
               textTransform: "none",
               fontSize: "20px",
               lineHeight: 1,
-              height: "42px"
+              height: "42px",
+              "&.Mui-disabled": {
+                backgroundColor: "rgba(1,1,1,0)",
+                borderStyle: "solid",
+                borderColor: burnAmount <= 0 ? "#949494 !important" : "transparent",
+                borderWidth: burnAmount <= 0 ? "2px" : "0",
+                color: "#949494",
+              },
             }}
             // loading={waitMint}
             onClick={handleBurn}

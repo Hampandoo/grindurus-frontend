@@ -45,7 +45,26 @@ function Dashboard({ poolId, setPoolId, networkConfig}) {
           }
         }}
       >
-        <Tabs value={mainTab} onChange={handleChangeMainTab} centered>
+        <Tabs value={mainTab} onChange={handleChangeMainTab} centered sx={{
+          '& .MuiTab-root': {
+              color: 'white !important',
+              fontWeight: "600",
+              fontSize: "18px"
+            },
+            '& .Mui-selected': {
+              color: 'white !important',
+              fontWeight: "600",
+              fontSize: "18px"
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'white',
+              fontWeight: "600",
+              fontSize: "18px"
+            },
+            color: "white",
+            fontSize: "18px",
+            fontWeight: "600"
+          }}>
           <Tab label="Pool"/>
           <Tab label="Grinder AI"/>
         </Tabs>
@@ -62,7 +81,26 @@ function Dashboard({ poolId, setPoolId, networkConfig}) {
               }}
               className="main-container-tab"
             >
-              <Tabs value={formTab} onChange={handleChangeFormTab} centered>
+              <Tabs value={formTab} onChange={handleChangeFormTab} centered sx={{
+                '& .MuiTab-root': {
+                    color: 'white !important',
+                    fontWeight: "600",
+                    fontSize: "16px"
+                  },
+                  '& .Mui-selected': {
+                    color: 'white !important',
+                    fontWeight: "600",
+                    fontSize: "16px"
+                  },
+                  '& .MuiTabs-indicator': {
+                    backgroundColor: 'white',
+                    fontWeight: "600",
+                    fontSize: "16px"
+                  },
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "600"
+                }}>
                 <Tab label="Mint Pool"/>
                 <Tab label="GRETH Burn"/>
                 <Tab label="GRETH Mint"/>
