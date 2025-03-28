@@ -1,11 +1,15 @@
 .main-container {
   display: flex;
-  width: 80%;
-  margin-top: 30px;
-  background: linear-gradient(to right, #fff 0%, #f9f4f6 100%);
+  max-width: 80%;
+  margin: auto;
   border-radius: 12px;
   padding: 10px 0 30px;
 }
+
+.dashboard-content {
+  flex-direction: column;
+}
+
 .main-container-tab {
   min-width: 100%;
 
@@ -27,5 +31,5 @@
 
 .pools-table-wrapper {
   display: flex;
-  width: 80%;
+  max-width: 100%;
 }

@@ -2,71 +2,30 @@ import React, { useState, useEffect } from 'react';
 import {ethers} from 'ethers';
 import config from '../../../config';
 import './PoolInfo.css';
+import {useContractService} from "../../../context/ContractContext";
+import {useParams} from "react-router-dom";
 
-function PoolInfo({ poolId, networkConfig }) {
-
-  const [poolOwner, setPoolOwner] = useState('')
-  const [oracleQuoteTokenPerFeeToken, setOracleQuoteTokenPerFeeToken] = useState('')
-  const [oracleQuoteTokenPerBaseToken, setOracleQuoteTokenPerBaseToken] = useState('')
-  const [royaltyReceiver, setRoyaltyReceiver] = useState('')
-  const [quoteToken, setQuoteToken] = useState('')
-  const [baseToken, setBaseToken] = useState('')
-
+function PoolInfo() {
+  const { poolsNFT } = useContractService();
+  const { poolId } = useParams();
   const [long, setLong] = useState({})
   const [hedge, setHedge] = useState({})
   const [thresholds, setThresholds] = useState({})
 
   useEffect(() => {
-    fetchPoolData();
+    if (!poolsNFT) {
+      return;
+    }
     fetchPositions();
     fetchThresholds();
-  }, [poolId, networkConfig]);
-
-  const fetchPoolData = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const poolsnftAddress = networkConfig.poolsnft;
-
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
-      const ownerOf = await poolsNFT.ownerOf(poolId);
-      setPoolOwner(ownerOf)
-      const royaltyReceiver = await poolsNFT.royaltyReceiver(poolId)
-      setRoyaltyReceiver(royaltyReceiver)
-
-      const poolNFTInfos = await poolsNFT.getPoolNFTInfosBy([poolId])
-      let poolNFTInfo = poolNFTInfos[0]
-      //console.log(poolNFTInfo)
-
-      setOracleQuoteTokenPerFeeToken(poolNFTInfo.oracleQuoteTokenPerFeeToken)
-      setOracleQuoteTokenPerBaseToken(poolNFTInfo.oracleQuoteTokenPerBaseToken)
-      setQuoteToken(poolNFTInfo.quoteToken)
-      setBaseToken(poolNFTInfo.baseToken)
-
-    } catch (error) {
-      console.log('failed to fetch pool info data ', error)
-    }
-  };
+  }, [poolId, poolsNFT]);
 
   const fetchPositions = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+    try{
+      console.log('p', poolId)
+      const poolsNFTInfos = await poolsNFT.getPoolNFTInfosBy([poolId])
+      const positions = poolsNFTInfos[0].positions;
 
-      const poolsnftAddress = networkConfig.poolsnft;
-
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
-      const positions = await poolsNFT.getPositions(poolId);
-      
       const long = {
         number: positions[0][0].toString(),
         numberMax: positions[0][1].toString(),
@@ -89,25 +48,15 @@ function PoolInfo({ poolId, networkConfig }) {
       }
       setLong(long)
       setHedge(hedge)
-    } catch {
-      console.log('failed to fetch pool info data')
+    } catch (err) {
+      console.log('failed to fetch pool info data', err)
     }
   }
 
   const fetchThresholds = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const poolsnftAddress = networkConfig.poolsnft;
-
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
+    try{
       const poolsNFTInfos = await poolsNFT.getPoolNFTInfosBy([poolId])
-      const _thresholds = await poolsNFT.getThresholds(poolId);
+      const _thresholds = poolsNFTInfos[0].thresholds;
       console.log(_thresholds)
       const thresholds = {
         longBuyPriceMin: ethers.formatUnits(_thresholds[0], 8),
@@ -130,17 +79,6 @@ function PoolInfo({ poolId, networkConfig }) {
 
   return (
     <div className="pool-info-container">
-      <div className="pool-info-content">
-        <h2 className="pool-info-title">Pool Id = {poolId}</h2>
-        <div className="pool-info-list">
-          <p><strong>Oracle QuoteToken/FeeToken:</strong> {oracleQuoteTokenPerFeeToken}</p>
-          <p><strong>Oracle QuoteToken/BaseToken:</strong> {oracleQuoteTokenPerBaseToken}</p>
-          <p><strong>Pool Owner:</strong> {poolOwner}</p>
-          <p><strong>Royalty Receiver:</strong> {royaltyReceiver}</p>
-          <p><strong>QuoteToken:</strong> {quoteToken}</p>
-          <p><strong>BaseToken:</strong> {baseToken}</p>
-        </div>
-      </div>
       <div className='pool-positions'>
         <table className="positions-table">
             <thead>

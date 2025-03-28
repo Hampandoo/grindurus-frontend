@@ -14,7 +14,7 @@ function renderAccount(isConnected, address) {
   }
 }
 
-export default function ConnectButton({ setView, setPoolId }) {
+export default function ConnectButton({ setPoolId }) {
   const { open } = useAppKit()
   const { address, isConnected } = useAppKitAccount()
   const { disconnect } = useDisconnect()
@@ -31,12 +31,10 @@ export default function ConnectButton({ setView, setPoolId }) {
     if (view == 'dashboard') {
       setPoolId(-1)
     }
-    setView(view);
   }
 
   const disconnectWallet = async () => {
     await disconnect()
-
   }
 
 

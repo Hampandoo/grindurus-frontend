@@ -26,7 +26,7 @@ function GrinderAIAgent ({ networkConfig }) {
             </div>
             <div className='grinderai-container-right'>
             <GrinderAIDeposit networkConfig={networkConfig} />
-              {/* <GrinderAIChat networkConfig={networkConfig}/> */}
+             {/*<GrinderAIChat networkConfig={networkConfig}/>*/}
             </div>
           </div>
         </>

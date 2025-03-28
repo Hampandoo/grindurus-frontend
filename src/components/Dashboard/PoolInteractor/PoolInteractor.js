@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import {ethers} from 'ethers';
 import config from '../../../config';
 import './PoolInteractor.css';
+import {useContractService} from "../../../context/ContractContext";
+import {useParams} from "react-router-dom";
 
-function PoolInteractor({ poolId, networkConfig }) {
+function PoolInteractor() {
+  const { poolsNFT, networkConfig, signer } = useContractService();
+  const { poolId } = useParams();
+
   const [activeTab, setActiveTab] = useState('interaction');
 
   const [inputDeposit, setInputDeposit] = useState(0);
@@ -28,18 +33,21 @@ function PoolInteractor({ poolId, networkConfig }) {
   const [feeCoefHedgeSell, setFeeCoefHedgeSell] = useState(1.0);
   const [feeCoefHedgeRebuy, setFeeCoefHedgeRebuy] = useState(1.0);
 
+  const [poolOwner, setPoolOwner] = useState('')
+  const [oracleQuoteTokenPerFeeToken, setOracleQuoteTokenPerFeeToken] = useState('')
+  const [oracleQuoteTokenPerBaseToken, setOracleQuoteTokenPerBaseToken] = useState('')
+  const [royaltyReceiver, setRoyaltyReceiver] = useState('')
+  const [quoteToken, setQuoteToken] = useState('')
+  const [baseToken, setBaseToken] = useState('')
+
+  useEffect(() => {
+    if (poolsNFT) {
+      fetchPoolData();
+    }
+  }, [poolId, networkConfig, poolsNFT]);
+
   const fetchConfig = async () => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const poolsnftAddress = networkConfig.poolsnft;
-
-      const poolsNFT = new ethers.Contract(
-        poolsnftAddress,
-        config.poolsNFTAbi,
-        signer
-      );
       const poolInfo = await poolsNFT.getPoolNFTInfosBy([poolId]);
       console.log(poolInfo)
       
@@ -72,11 +80,29 @@ function PoolInteractor({ poolId, networkConfig }) {
     }
   }
 
+  const fetchPoolData = async () => {
+    try{
+      const ownerOf = await poolsNFT.ownerOf(poolId);
+      setPoolOwner(ownerOf)
+      const royaltyReceiver = await poolsNFT.royaltyReceiver(poolId)
+      setRoyaltyReceiver(royaltyReceiver)
+
+      const poolNFTInfos = await poolsNFT.getPoolNFTInfosBy([poolId])
+      let poolNFTInfo = poolNFTInfos[0]
+      //console.log(poolNFTInfo)
+
+      setOracleQuoteTokenPerFeeToken(poolNFTInfo.oracleQuoteTokenPerFeeToken)
+      setOracleQuoteTokenPerBaseToken(poolNFTInfo.oracleQuoteTokenPerBaseToken)
+      setQuoteToken(poolNFTInfo.quoteToken)
+      setBaseToken(poolNFTInfo.baseToken)
+
+    } catch (error) {
+      console.log('failed to fetch pool info data ', error)
+    }
+  };
+
   const fetchRoyaltyPrice = async () => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -102,10 +128,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }, []); // called only once
 
   const handleDeposit = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
       
       const poolsNFT = new ethers.Contract(
@@ -131,10 +154,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleWithdraw = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -156,10 +176,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleExit = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -182,10 +199,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleSetLongNumberMax = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -214,10 +228,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleSetHedgeNumberMax = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -246,10 +257,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleSetExtraCoef = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -279,10 +287,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleSetPriceVolatilityPercent = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -311,10 +316,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleSetReturnPercent = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -345,10 +347,7 @@ function PoolInteractor({ poolId, networkConfig }) {
   }
 
   const handleSetFeeCoef = async () => {
-    try{ 
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
+    try{
       const poolsnftAddress = networkConfig.poolsnft;
 
       const poolsNFT = new ethers.Contract(
@@ -378,27 +377,39 @@ function PoolInteractor({ poolId, networkConfig }) {
 
 
   return (
-    <div className="pool-interactor">
-      <div className="tabs">
-        <div className="tab-buttons">
-          <button
-            onClick={() => {
-                setActiveTab('interaction')
-                fetchRoyaltyPrice()
-              }
-            }
-            className={activeTab === 'interaction' ? 'active' : ''}
-          >
-            Interaction
-          </button>
-          <button
-            onClick={() => {
-                setActiveTab('config')
-                fetchConfig()
-              }
-            }
-            className={activeTab === 'config' ? 'active' : ''}
-          >
+    <div className="pool-info-and-interactor-container">
+    <div className="pool-info-content">
+      <h2 className="pool-info-title">Pool Id = {poolId}</h2>
+      <div className="pool-info-list">
+        <p><strong>Oracle QuoteToken/FeeToken:</strong> {oracleQuoteTokenPerFeeToken}</p>
+        <p><strong>Oracle QuoteToken/BaseToken:</strong> {oracleQuoteTokenPerBaseToken}</p>
+        <p><strong>Pool Owner:</strong> {poolOwner}</p>
+        <p><strong>Royalty Receiver:</strong> {royaltyReceiver}</p>
+        <p><strong>QuoteToken:</strong> {quoteToken}</p>
+        <p><strong>BaseToken:</strong> {baseToken}</p>
+      </div>
+    </div>
+  <div className="pool-interactor">
+    <div className="tabs">
+      <div className="tab-buttons">
+        <button
+          onClick={() => {
+            setActiveTab('interaction')
+            fetchRoyaltyPrice()
+          }
+          }
+          className={activeTab === 'interaction' ? 'active' : ''}
+        >
+          Interaction
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('config')
+            fetchConfig()
+          }
+          }
+          className={activeTab === 'config' ? 'active' : ''}
+        >
             Configuration
           </button>
           <div 
@@ -599,6 +610,7 @@ function PoolInteractor({ poolId, networkConfig }) {
         </div>
       )}
     </div>
+      </div>
   );
 }
 

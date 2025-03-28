@@ -1,14 +1,87 @@
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 600px;
-  max-width: 600px;
-  margin: 0 auto;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #fff;
+/* Стилі для іконки чату */
+.chat-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 35px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.chat-icon:hover {
+  transform: scale(1.1); /* Анімація збільшення при наведенні */
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+.chat-icon:active {
+  transform: scale(0.95); /* Анімація зменшення при натисканні */
+}
+
+/* Анімація для іконки, що підсвічується періодично */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 1);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+}
+
+.chat-icon {
+  animation: glow 1.5s ease-in-out infinite;
+}
+
+/* Стилі для кнопки закриття чату */
+.close-chat {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #007bff; /* Голубий колір */
+  font-weight: lighter; /* Тонший стиль шрифта */
+  border-radius: 50%;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+/* Основні стилі для контейнера чату */
+.chat-container {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 400px;
+  z-index: 100;
+  height: 400px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateX(100%); /* Початкове розташування за межами екрана */
+  animation: slideIn 0.3s forwards; /* Анімація для плавного виїзду */
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0); /* Плавно переміщується до потрібного місця */
+    opacity: 1;
+  }
+}
+
+/* Стилі для повідомлень чату */
 .chat-messages {
   flex-grow: 1;
   overflow-y: auto;
@@ -43,6 +116,7 @@
   color: black;
 }
 
+/* Стилі для індикатора друку */
 .typing-indicator {
   text-align: left;
 }
@@ -54,6 +128,7 @@
   background-color: #e9ecef;
 }
 
+/* Стилі для форми вводу повідомлення */
 .chat-form {
   border-top: 1px solid #ccc;
   padding: 16px;
@@ -83,15 +158,14 @@
   background-color: #0056b3;
 }
 
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px;
+/* Анімація для приховування чату */
+@keyframes slideOut {
+  to {
+    transform: translateX(100%); /* Переміщається за межі екрана */
+    opacity: 0;
+  }
 }
 
-.page-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
-  text-align: center;
+.chat-container.closing {
+  animation: slideOut 0.3s forwards; /* Анімація для виїзду чату */
 }

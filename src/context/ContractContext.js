@@ -61,7 +61,7 @@ export const ContractProvider = ({ children,}) => {
 
 
   return (
-    <ContractContext.Provider value={{ provider, poolsNFT, networkConfig, setNetworkConfig, isConnected }}>
+    <ContractContext.Provider value={{ provider, poolsNFT, networkConfig, setNetworkConfig, isConnected, signer }}>
       {children}
     </ContractContext.Provider>
   );

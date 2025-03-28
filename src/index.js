@@ -5,11 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "./client";
 import {ContractProvider} from "./context/ContractContext";
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ContractProvider>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </ContractProvider>
 );
 

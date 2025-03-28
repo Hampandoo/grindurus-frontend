@@ -7,6 +7,7 @@ import {IconButton, InputAdornment, Pagination, PaginationItem, TextField} from 
 import {POOL_TABLE_COLUMNS} from "./constants";
 import {useContractService} from "../../../context/ContractContext";
 import debounce from 'lodash.debounce';
+import {useNavigate} from "react-router-dom";
 
 const DEFAULT_PAGINATION_PARAMS = {
   pageSize: 5 ,
@@ -22,18 +23,25 @@ function PoolsTable({ setPoolId }) {
   const [isLoading, setIsLoading] = useState(true);
   const { poolsNFT, isConnected } = useContractService();
   const [paginationModel, setPaginationModel] = useState(DEFAULT_PAGINATION_PARAMS);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const ids = getPoolsIds(paginationModel, searchPoolsIds);
+    if (isConnected && poolsNFT) {
+      fetchTotalPools();
+    }
+  }, [isConnected, poolsNFT]);
+
+
+  useEffect(() => {
+    const ids = getPoolsIds(paginationModel, searchPoolsIds, tableRowsAmount);
     setPreparedPoolIds(ids);
-  }, [paginationModel, searchPoolsIds]);
+  }, [paginationModel, searchPoolsIds, tableRowsAmount]);
 
   useEffect(() => {
     if (!poolsNFT || !preparedPoolIds.length) {
       return;
     }
 
-    fetchTotalPools();
     fetchLastPools(preparedPoolIds);
 
   }, [poolsNFT, preparedPoolIds]);
@@ -61,7 +69,7 @@ function PoolsTable({ setPoolId }) {
       setCurrentTableData(formTabledata(poolNFTInfos));
 
     } catch (error) {
-      resetTableData();
+      console.log('error', error);
     }
     setIsLoading(false);
   };
@@ -78,19 +86,20 @@ function PoolsTable({ setPoolId }) {
       const quoteTokenDecimals = poolNFTInfo.quoteTokenDecimals
       const baseTokenDecimals = poolNFTInfo.baseTokenDecimals
       const totalProfits = poolNFTInfo.totalProfits
-      const APR = poolNFTInfo.apr
+      const roi = poolNFTInfo.roi
       const quoteTokenAmount = ethers.formatUnits(poolNFTInfo.quoteTokenAmount, quoteTokenDecimals)
       const baseTokenAmount = ethers.formatUnits(poolNFTInfo.baseTokenAmount, baseTokenDecimals)
       const quoteTokenYieldProfit = parseFloat(ethers.formatUnits(totalProfits.quoteTokenYieldProfit, quoteTokenDecimals)).toFixed(Number(quoteTokenDecimals))
       const baseTokenYieldProfit = parseFloat(ethers.formatUnits(totalProfits.baseTokenYieldProfit, baseTokenDecimals)).toFixed(Number(baseTokenDecimals))
       const quoteTokenTradeProfit = parseFloat(ethers.formatUnits(totalProfits.quoteTokenTradeProfit, quoteTokenDecimals)).toFixed(Number(quoteTokenDecimals))
       const baseTokenTradeProfit = parseFloat(ethers.formatUnits(totalProfits.baseTokenTradeProfit, baseTokenDecimals)).toFixed(Number(baseTokenDecimals))
-      console.log(poolNFTInfo.startTimestamp)
       const start = new Date(Number(poolNFTInfo.startTimestamp) * 1000).toDateString();
-      const aprNumerator = Number(APR.APRNumerator);
-      const aprDenominator = Number(APR.APRDenominator);
+      const aprNumerator = Number(roi.ROINumerator) * Number(365 * 30 * 24 * 60);
+      const aprDenominator = Number(roi.ROIDeniminator) * Number(roi.ROIPeriod);
       const apr = aprDenominator > 0 ? `${((aprNumerator / aprDenominator) * 100).toFixed(2)}%` : "N/A"
-      const royaltyPrice = ethers.formatUnits(poolNFTInfo.royaltyPrice, 18)
+      const royaltyParams = poolNFTInfo.royaltyParams;
+      console.log(royaltyParams)
+      const royaltyPrice = ethers.formatUnits(royaltyParams.newRoyaltyPrice, quoteTokenDecimals)
 
       return {
         networkIcon: logoArbitrum,
@@ -106,12 +115,13 @@ function PoolsTable({ setPoolId }) {
     return tableData
   }
 
-  const getPoolsIds = (paginationParams, ids) => {
+  const getPoolsIds = (paginationParams, ids, totalPools) => {
     const { page, pageSize } = paginationParams;
     let startIdx = page * pageSize;
+    const maxIdx = Math.min(startIdx + pageSize, totalPools);
 
     return  ids.length > 0 ? ids : Array.from(
-      { length: pageSize },
+      { length: maxIdx - startIdx },
       (_, i) => startIdx + i
     );
   };
@@ -122,7 +132,7 @@ function PoolsTable({ setPoolId }) {
   };
 
   const handleViewPool = (poolId) => {
-    setPoolId(poolId)
+    navigate(`/pool/${poolId}`);
   }
 
   const resetTableData = () => {
@@ -133,12 +143,9 @@ function PoolsTable({ setPoolId }) {
 
   const handleGrind = async (poolId) => {
     try {
-      // console.log(poolsNFT)
       const estimatedGasLimit = await poolsNFT.grind.estimateGas(poolId);
-      // console.log(estimatedGasLimit)
       const adjustedGasLimit = estimatedGasLimit * 15n / 10n
-      // console.log(adjustedGasLimit)
-  
+
       const tx = await poolsNFT.grind(poolId, {gasLimit: adjustedGasLimit});
       await tx.wait()
 
@@ -253,6 +260,9 @@ function PoolsTable({ setPoolId }) {
           style={{maxHeight: "800px"}}
           getRowHeight={() => "auto"}
           sx={{
+            "& .MuiDataGrid-columnHeader:focus": {
+
+            },
             "& .MuiDataGrid-cell": {
               display: "flex",
               alignItems: "center",
