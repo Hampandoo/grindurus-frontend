@@ -1,35 +1,58 @@
-.main-container {
+.mint-nft {
+  padding: 50px 0;
+  border-bottom: 1px solid #fff;
+}
+
+.mint-nft-container {
   display: flex;
-  max-width: 80%;
-  margin: 0 auto;
-  border-radius: 12px;
-  padding: 10px 0 30px;
+  gap: 50px;
 }
 
-.dashboard-content {
-  flex-direction: column;
-}
-
-.main-container-tab {
-  min-width: 100%;
-
+.mint-nft-content {
   display: flex;
   flex-direction: column;
-  flex: 1 0 auto;
-}
-  
-.main-container-left {
-  flex: 1;
+  justify-content: space-between;
+  width: 50%;
 }
 
-.main-container-right {
-  flex: 1;
+.mint-nft-statistics {
+  border: 1px solid #fff;
+	border-radius: 8px;
+}
+
+.stat {
+  font-size: 20px;
+}
+
+.stat-item {
   display: flex;
-  justify-content: flex-end;
 }
 
+.stat-item:not(:last-child) {
+  border-bottom: 1px solid #fff;
+}
 
-.pools-table-wrapper {
-  display: flex;
-  max-width: 100%;
+.stat-key {
+  width: 60%;
+	border-right: 1px solid #fff;
+}
+
+.stat-value {
+  width: 40%;
+}
+
+.stat-key, .stat-value {
+  text-align: center;
+	padding: 20px 15px;
+}
+
+.pools-table {
+  padding: 50px 0;
+}
+
+.mint-nft-text p {
+  color: #fff;
+  font-size: 16px;
+  line-height: 150%;
+  margin: 0;
 }

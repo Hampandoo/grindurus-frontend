@@ -3,7 +3,7 @@ import "./ConnectWalletBanner.css"; // Стилі для компонента
 
 function ConnectWallet() {
   return (
-    <div className="connect-wallet-container">
+    <div className="connect-wallet">
       <div className="connect-wallet-content">
         <img
           src="https://img.icons8.com/ios/452/ethereum.png" // Можна замінити на свою картинку

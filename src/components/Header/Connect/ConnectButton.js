@@ -1,11 +1,9 @@
-import styles from "./ConnectButton.module.css"
-import React, {useState} from 'react';
 import { useAppKitAccount, useDisconnect, useAppKit } from "@reown/appkit/react"
-
 
 function shortenAddress(addressStr) {
   return addressStr.slice(0, 4) + "..." + addressStr.slice(-4);
 }
+
 function renderAccount(isConnected, address) {
   if(isConnected) {
     return shortenAddress(address)
@@ -19,42 +17,18 @@ export default function ConnectButton({ setPoolId }) {
   const { address, isConnected } = useAppKitAccount()
   const { disconnect } = useDisconnect()
 
-  const [showMenu, setShowMenu] = useState(false);
-  const toggleMenu = () => {
-    if (address == '') {
-      return
-    }
-    setShowMenu(!showMenu);
-  };
-
   const handleHeaderClick = async (view) => {
     if (view == 'dashboard') {
       setPoolId(-1)
     }
   }
 
-  const disconnectWallet = async () => {
-    await disconnect()
-  }
-
-
   return (
-    <div
-      className={styles['wallet-menu-container']}
-      onMouseEnter={toggleMenu}
-      onMouseLeave={toggleMenu}
+    <button 
+      className="button connect-button" 
+      onClick={() => open()}
     >
-      <button className={styles['connect-wallet']} onClick={() => open()}>{renderAccount(isConnected, address)}</button>
-      {showMenu && address && (
-        <div className={styles['wallet-menu']}>
-          <div className={styles['wallet-menu-item']} onClick={() => handleHeaderClick('profile')}>
-            Profile
-          </div>
-          <div className={styles['wallet-menu-item']} onClick={() => disconnectWallet()}>
-            Logout
-          </div>
-        </div>
-      )}
-    </div>
+      {renderAccount(isConnected, address)}
+    </button>
   )
 }

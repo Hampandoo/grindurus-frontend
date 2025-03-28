@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import config from '../../../config';
 import {ethers} from 'ethers';
-import { Select, MenuItem, FormControl, TextField, Button } from "@mui/material";
+import { Select, MenuItem, FormControl, TextField, Button, Paper } from "@mui/material";
 import './MintPoolNFT.css';
 import { useContractService } from '../../../context/ContractContext';
 
@@ -164,83 +164,157 @@ function MintPoolNFT({ networkConfig }) {
   }, [selectedBaseTokenId])
 
   return (
-    <div className="mint-nft-pool">
-      <div className='mint-nft-label'>Mint Pool NFT</div>
+    <div className="form">
       <div className="form-group">
-        <div className="label-container">Strategy</div>
-        <div className="select-with-icon">
+        <div className="form-label">Strategy</div>
+        <div className="form-select">
         <FormControl fullWidth>
-          {/* <InputLabel>Виберіть опцію</InputLabel> */}
           <Select
             value={selectedStrategyId}
             sx={{
-              height: "42px",
+              width: "100%",
+              display: "flex",
+              gap: "30px",
+              justifyContent: "flex-start",
+              fontFamily: "Noto Sans Mono",
+              fontSize: "20px",
+              fontWeight: "800",
+              alignItems: "center",
               borderRadius: "8px",
               color: "white",
-              backgroundColor: "black",
+              backgroundColor: "#1a1a1a",
               border: "1px solid white",
               '& .MuiSelect-icon': {
                 color: 'white',
               }
+            }} MenuProps={{
+              disableScrollLock: true,
+              PaperProps: {
+                sx: {
+                  backgroundColor: 'black',
+                  color: 'white',
+                  border: "1px solid white",
+                  borderRadius: "8px",
+                  padding: "0",
+                  margin: "0"
+                },
+              },
             }}
             onChange={(e) => setSelectedStrategyId(e.target.value)}
           >
             {networkConfig.strategies.map((strategy, index) => (
-              <MenuItem key={index} value={index}>{strategy.description}</MenuItem>
+              <MenuItem key={index} value={index} sx={{
+                display: "flex",
+                alignItems: "center",
+                color: "white",
+                fontFamily: "Noto Sans Mono",
+                fontSize: "20px",
+                fontWeight: "800",
+                backgroundColor: "#1a1a1a",
+                padding: "15px",
+                ":not(:last-child)": {
+                  borderBottom: "1px solid white"
+                }
+              }}>{strategy.description}</MenuItem>
             ))}
           </Select>
         </FormControl>
         </div>
       </div>
       <div className="form-group">
-        <div className="label-container">
+        <div className="form-label">
           Base Token
         </div>
-        <div className="select-with-icon">
-        <img
-            src={networkConfig.baseTokens.find(token => token.symbol === selectedBaseTokenId)?.logo}
-            alt={networkConfig.baseTokens.find(token => token.symbol === selectedBaseTokenId)?.symbol}
-          className="token-icon"
-        />
+        <div className="form-select">
         <FormControl fullWidth>
-          {/* <InputLabel>Виберіть опцію</InputLabel> */}
           <Select
             value={selectedBaseTokenId}
             sx={{
-              height: "42px",
+              width: "100%",
+              display: "flex",
+              gap: "30px",
+              justifyContent: "flex-start",
+              fontFamily: "Noto Sans Mono",
+              fontSize: "20px",
+              fontWeight: "800",
+              alignItems: "center",
               borderRadius: "8px",
               color: "white",
               backgroundColor: "black",
               border: "1px solid white",
               '& .MuiSelect-icon': {
                 color: 'white',
-              }
+              }, 
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'black',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'black',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'white',
+              },
+              '& .MuiSelect-select': {
+                padding: '15px',
+                color: 'white', 
+              },
+            }} MenuProps={{
+              disableScrollLock: true,
+              PaperProps: {
+                sx: {
+                  backgroundColor: '#1a1a1a',
+                  color: 'white',
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  border: "1px solid white"
+                },
+              },
             }}
             onChange={(e) => setBaseTokenId(e.target.value)}
           >
             {networkConfig.baseTokens.map((tokenInfo, index) => (
-              <MenuItem key={index} value={tokenInfo.symbol}>{tokenInfo.symbol}</MenuItem>
+              <MenuItem key={index} value={tokenInfo.symbol} sx={{
+                display: "flex",
+                alignItems: "center",
+                color: "white",
+                fontFamily: "Noto Sans Mono",
+                fontSize: "20px",
+                fontWeight: "800",
+                backgroundColor: "#1a1a1a",
+                padding: "15px",
+                ":not(:last-child)": {
+                  borderBottom: "1px solid white"
+                }
+              }}>
+                <img
+                  src={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.logo}
+                  alt={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.symbol}
+                  className="token-icon"
+                />
+                {tokenInfo.symbol}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
       </div>
       </div>
       <div className="form-group">
-        <div className="label-container">
+        <div className="form-label">
           Quote Token
         </div>
-        <div className="select-with-icon">
-          <img
-            src={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.logo}
-            alt={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.symbol}
-            className="token-icon"
-          />
+        <div className="form-select">
           <FormControl fullWidth>
-            {/* <InputLabel>Виберіть опцію</InputLabel> */}
             <Select
               value={selectedQuoteTokenId}
               sx={{
-                height: "42px",
+                width: "100%",
+                display: "flex",
+                gap: "30px",
+                justifyContent: "flex-start",
+                fontFamily: "Noto Sans Mono",
+                fontSize: "20px",
+                fontWeight: "800",
+                alignItems: "center",
                 borderRadius: "8px",
                 color: "white",
                 backgroundColor: "black",
@@ -248,46 +322,56 @@ function MintPoolNFT({ networkConfig }) {
                 '& .MuiSelect-icon': {
                   color: 'white',
                 }
+              }} MenuProps={{
+                disableScrollLock: true,
+                PaperProps: {
+                  sx: {
+                    backgroundColor: '#1a1a1a',
+                    color: 'white',
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    border: "1px solid white"
+                  },
+                },
               }}
               onChange={(e) => setQuoteTokenId(e.target.value)}
             >
               {networkConfig.quoteTokens.filter((token) => token.symbol != selectedBaseTokenId).map((tokenInfo, index) => (
-                <MenuItem key={index} value={tokenInfo.symbol}>{tokenInfo.symbol}</MenuItem>
+                <MenuItem key={index} value={tokenInfo.symbol} sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "white",
+                  fontFamily: "Noto Sans Mono",
+                  fontSize: "20px",
+                  fontWeight: "800",
+                  backgroundColor: "#1a1a1a",
+                  padding: "15px",
+                  ":not(:last-child)": {
+                    borderBottom: "1px solid white"
+                  }
+                }}>
+                  <img
+                    src={networkConfig.quoteTokens.find(token => token.symbol === tokenInfo.symbol)?.logo}
+                    alt={networkConfig.quoteTokens.find(token => token.symbol === tokenInfo.symbol)?.symbol}
+                    className="token-icon"
+                  />
+                  {tokenInfo.symbol}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
         </div>
       </div>
       <div className="form-group">
-        <div className="label-container">
-          Deposit Quote Token
+        <div className="form-label">
+          Quote Token Amount
         </div>
-        <div className="input-with-max">
-          <img
-            src={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.logo}
-            alt={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.symbol}
-            className="token-icon token-last-icon"
+        <div className="form-input">
+          <input
+            value={quoteTokenAmount}
+            placeholder="0"
+            onChange={(e) => setQuoteTokenAmount(e.target.value)}
           />
-          <FormControl fullWidth>
-            <TextField
-              value={quoteTokenAmount}
-              variant="outlined"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                    height: "42px",
-                    borderRadius: "8px",
-                    color: "white",
-                    backgroundColor: "black",
-                    border: "1px solid white",
-                    '& .MuiSelect-icon': {
-                      color: 'white',
-                    }
-                  },
-              }}
-              placeholder="0"
-              onChange={(e) => setQuoteTokenAmount(e.target.value)}
-            />
-          </FormControl>
           <button
             type="button"
             className="max-button"
@@ -297,63 +381,17 @@ function MintPoolNFT({ networkConfig }) {
           </button>
         </div>
       </div>
-      <div className="button-group">
+      <div className="form-buttons">
         {!isApproved ? (
-          <Button
-            className="approve-button"
-            variant={waitApproving ? 'variant' : 'contained'}
-            disabled={quoteTokenAmount <= 0}
-            sx={{
-              borderRadius: "8px",
-              fontWeight: 700,
-              minWidth: "unset",
-              backgroundColor: waitApproving ? "transparent" : "#f7e1fc",
-              borderColor: waitApproving ? "#f7e1fc" : "transparent",
-              borderWidth: waitApproving ? "2px" : "0",
-              "&.Mui-disabled": {
-                backgroundColor: "rgba(1,1,1,0)",
-                borderStyle: "solid",
-                borderColor: quoteTokenAmount <= 0 ? "#949494" : "transparent",
-                borderWidth: quoteTokenAmount <= 0 ? "2px" : "0",
-                color: "#949494",
-              },
-              borderStyle: "solid",
-              color: "#c556db",
-              textTransform: "none",
-              fontSize: "20px",
-              lineHeight: 1,
-              height: "42px"
-            }}
-            loading={waitApproving}
+          <button
+            className="button approve-button"
             onClick={handleApprove}
-          >Approve Quote Token</Button>
+          >Approve</button>
         ) : (
-          <Button
-            className="mint-button"
-            variant={waitMint ? 'variant' : 'contained'}
-            disabled={quoteTokenAmount <= 0 || allowance < quoteTokenAmount}
-            sx={{
-              borderRadius: "8px",
-              fontWeight: 700,
-              minWidth: "unset",
-              backgroundColor: waitMint ? "transparent" : "#c1fbba",
-              borderColor: waitMint ? "#c1fbba" : "transparent",
-              borderWidth: waitMint ? "2px" : "0",
-              "&.Mui-disabled": {
-                backgroundColor: "rgba(1,1,1,0)",
-                borderStyle: "solid",
-                borderColor: quoteTokenAmount <= 0 ? "rgba(51, 51, 51, 0.1)" : "transparent",
-                borderWidth: quoteTokenAmount <= 0 ? "2px" : "0",
-              },
-              color: "#006f16",
-              textTransform: "none",
-              fontSize: "20px",
-              lineHeight: 1,
-              height: "42px"
-            }}
-            loading={waitMint}
+          <button
+            className="button mint-button"
             onClick={handleMint}
-          >Mint Pool</Button>
+          >Mint</button>
         )}
       </div>
     </div>

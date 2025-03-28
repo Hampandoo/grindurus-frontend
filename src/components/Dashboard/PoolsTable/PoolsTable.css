@@ -1,59 +1,5 @@
-.pools-table-container {
-  width: 100%;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
-}
-
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #c556db;
-}
-
-.title-and-filters {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.filters {
-  display: flex; /* Горизонтальное выравнивание поиска */
-  align-items: center;
-  gap: 10px; /* Отступ между элементами */
-}
-
-.search-input {
-  height: 42px;
-}
-
 .network {
   font-size: 16px;
-}
-
-.filter-button {
-  background-color: #f7e1fc;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 15px;
-  color: #c556db;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.search-input {
-  flex: 1;
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 300px; /* Устанавливает фиксированную ширину, если flex не используется */
-}
-
-.search-button {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
 }
 
 .pools-table {

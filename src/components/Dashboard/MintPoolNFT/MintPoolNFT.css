@@ -1,147 +1,55 @@
-.mint-nft-pool {
-    width: 100%; /* Фиксированная ширина окна */
-    max-width: 535px;
-    padding: 20px;
-    background: black;
-    border-radius: 15px;
-    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
-    border: 1px solid white;
-    font-family: Arial, sans-serif;
-    box-sizing: border-box;
-
-    align-self: flex-end;
-  }
-  
-.mint-nft-label {
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    margin-top: 0px;
-    color: white;
-    text-align: center;
+.form {
+  width: 50%;
+	border: 1px solid #fff;
+	border-radius: 8px;
+	padding: 30px;
 }
 
-.form-group {
-    margin-bottom: 10px;
+.form-group:not(:last-child) {
+  margin-bottom: 15px;
 }
 
-.form-group label {
-    display: block;
-    font-size: 16px;
-    color: white !important;
-    margin-bottom: 5px;
+.form-label {
+  font-size: 20px;
+  font-weight: 700;
 }
 
-.form-group select,
-/* .form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
-  font-size: 18px;
-} */
-
-.label-container {
-  font-size: 18px;
-  font-weight: bold;
-  text-align: left;
-  margin-bottom: 5px;
-  color: white;
+.form-label:not(:last-child) {
+  margin-bottom: 15px;
 }
 
-.select-with-icon {
+.form-input {
+  font-size: 20px;
   display: flex;
-  align-items: center;
-  gap: 5px; /* Расстояние между иконкой и select */
-}
-  
-.select-with-icon .token-icon {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-}
-.token-last-icon {
-  margin-inline-end: 10px;
-}
-
-.select-with-icon select {
-    /*flex: 1; /* Занимает оставшееся пространство */
-  padding: 8px;
-  border: 1px solid white;
+  border: 1px solid #fff;
   border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
-  font-size: 18px;
 }
 
-.form-group input::placeholder {
-    color: #ccc;
-}
-
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.approve-button,
-.mint-button {
-    flex: 1;
-    padding: 10px;
-    font-size: 14px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 0 5px;
-    font-weight: bold;
-}
-
-.approve-button {
-    background: #f7e1fc;
-    font-size: 20px;
-    font-weight: bold;
-    color: #c556db;
-}
-
-.mint-button {
-    background: #c1fbba;
-    font-size: 20px;
-    font-weight: bold;
-    color: #006f16;
-}
-
-.input-with-max {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-
-.input-field {
-    flex: 1;
-    padding: 8px 40px 8px 10px; /* Добавляем отступ справа для кнопки */
-    border: 1px solid white;
-    border-radius: 6px;
-    font-size: 1rem;
+.form-input input {
+  font-size: 20px;
+  padding: 20px 15px;
+  border: 0;
 }
 
 .max-button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    
-    background: none;
-    border: none;
-    color: white;
-    background: black !important;
-    font-size: 0.9rem;
-    cursor: pointer;
-    padding: 6px;
+  font-size: 16px;
+  background-color: #933DC9;
+  padding: 20px 30px;
+  border: 0;
+  border-left: 1px solid #fff;
 }
 
-.max-button:hover {
-    text-decoration: underline;
-    background: #f7e1fc;
+.token-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+}
+
+.approve-button, .mint-button {
+  width: 100%;
+  background-color: #933DC9;
+  padding: 20px 15px;
+  border: 1px solid #933DC9;
+  border-radius: 8px;
+  margin-top: 30px;
 }

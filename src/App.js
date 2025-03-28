@@ -40,18 +40,17 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <>
       <Header
         setPoolId={setPoolId}
       />
-      <div className='main-container'>
+      <main className="page">
         <Routes>
           <Route path="/" exact element={
             <RouterGuard networkConfig={networkConfig} isConnected={isConnected}>
               <Dashboard poolId={poolId} setPoolId={setPoolId} networkConfig={networkConfig}/>
             </RouterGuard>
           }/>
-
           <Route path="/pool/:poolId" element={
             <>
               <div className='main-container-left'>
@@ -63,10 +62,9 @@ function App() {
             </>
           }/>
         </Routes>
-
         <GrinderAIChat />
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
 

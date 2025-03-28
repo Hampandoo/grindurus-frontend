@@ -1,149 +1,58 @@
 .header {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #000;
+  border-bottom: 0.0625rem solid #fff;
+}
 
-  max-width: 80%; /* Максимальная ширина хедера */
-  width: 100%; /* Занимает всю доступную ширину до 1200px */
-  margin: 0 auto; /* Центрирование хедера */
+.header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  /* background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box; */
-
-  border-bottom: 1px solid white;
+  padding-top: 0.9375rem;
+  padding-bottom: 0.9375rem;
 }
 
-.header-left {
+.header-logo {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.9375rem;
+  font-weight: bold;
+  font-size: 1.875rem;
+}
+
+.header-logo img {
+  width: 2.5rem;
+}
+
+.header-navigation, .header-menu {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
-.header-name {
-  font-size: 30px;
-
-  color: white;
-  font-weight: 700;
-}
-
-.logo {
-  width: 40px;
-  margin-right: 15px;
-}
-
-.dashboard-button {
-  background: none;
-  border: none;
-  color: #d354f8;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 20px;
-  text-decoration: none;
-  position: relative; /* Для работы с псевдоэлементом */
-}
-
-.dashboard-button::after {
-  content: ''; /* Создаём пустой элемент */
-  position: absolute;
-  bottom: -10px; /* Расположение линии ниже кнопки */
-  left: 0;
-  width: 0; /* Начальная ширина линии */
-  height: 2px; /* Толщина линии */
-  background: #d354f8; /* Цвет линии */
-}
-
-.grEth-button {
-  margin-left: 40px;
-}
-
-.network-logo {
-  width: 30px;
-  height: 30px;
-}
-
-.dashboard-button:hover::after,
-.dashboard-button:focus::after {
-  width: 100%;
-}
-
-.header-right {
+.header-buttons {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  gap: 0.9375rem;
 }
 
-.network-select select {
-  padding: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  border: 4px solid #ddd;
-  border-radius: 5px;
-  background: #f9f9f900;
-  cursor: pointer;
+.header-buttons button {
+  padding: 0.625rem 1.875rem;
 }
 
-.token-info {
+.menu {
   display: flex;
-  align-items: center;
+  gap: 1.875rem;
 }
 
-.token-icon {
-  width: 25px;
-  margin-right: 5px;
+.menu-item {
+  font-size: 1.125rem;
 }
 
-.connect-wallet {
-  background: #d354f8;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 20px;
-  width: 180px; 
-  text-align: center;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-
-.connect {
-  display: flex;
-  gap: 15px;
-}
-
-.network-button {
-  display: flex;
-  align-items:center;
-  gap: 15px;
-  border-radius: 8px;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background-color 0.25s;
-
-  background: black;
-  border: 1px solid white;
-  color: white;
-  font-weight: 600;
-}
-
-.connect-button {
-  color: #fff;
-  background-color: #000;
-}
-
-.icon {
-  width: 25px;
-  height: 25px;
-}
-
-.icon img {
-  width: 100%;
-  height: 100%;
+.menu-link:hover {
+  text-decoration: underline;
 }

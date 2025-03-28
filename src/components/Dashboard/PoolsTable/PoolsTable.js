@@ -218,33 +218,13 @@ function PoolsTable({ setPoolId }) {
 
   return (
     <div className="pools-table-container">
-      <div className="title-and-filters">
-        <h2>Pools NFTs</h2>
-
-        <div className="filters">
-          <TextField
-            variant="outlined"
-            placeholder="pool id / address"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                height: "42px",
-                borderRadius: "8px"
-              },
-            }}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  edge="end"
-                >
-                  {}
-                </IconButton>
-              </InputAdornment>
-            }
-            onChange={handleSearch}
-          />
+      <div class="pools-table-header">
+        <h2 class="pools-table-title title">Explore All Pools</h2>
+        <div class="pools-table-search search">
+          <input onChange={handleSearch} placeholder="Search with pool id or owner address" type="text" class="search-input" />
+          <button class="search-button">Search</button>
         </div>
-      </div>
-
+			</div>
       <div style={{ width: "100%"}}>
         <DataGrid
           rows={rows}
