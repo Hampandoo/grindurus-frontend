@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useContractService } from '../../../context/ContractContext';
 import { ethers } from 'ethers';
 import config from '../../../config';
-import { Select, MenuItem, FormControl, TextField, Button } from "@mui/material";
+import { Select, MenuItem, FormControl, TextField, Button, Checkbox } from "@mui/material";
 import './MintIntent.css';
 
 
 function MintIntent({ networkConfig }) {
   const { provider } = useContractService();
 
-  const GRIND_AMOUNT_MAP = [1, 5, 20, 100];
+  const GRIND_AMOUNT_MAP = [1, 5, 10, 20, 50, 75, 100];
   const ETH = '0x0000000000000000000000000000000000000000';
 
   const [defaultRecieverWalletAdress, setDefaultRecieverWalletAdress] = useState('');
@@ -89,6 +89,10 @@ function MintIntent({ networkConfig }) {
     }
   };
 
+  function addIntentAmount(num) {
+    setGrindAmount(Number(grindAmount) + Number(num));
+  }
+
   return (
     <div className="mint-intent-container">
       <div className="mint-intent-title">Mint Intent</div>
@@ -98,43 +102,112 @@ function MintIntent({ networkConfig }) {
         <label className="label">Intent Amount ~ ({grindAmount} times)</label>
         <FormControl fullWidth>
           {/* <InputLabel>Виберіть опцію</InputLabel> */}
-          <Select
+          <TextField
+            id="burn-amount"
             value={grindAmount}
+            variant="outlined"
             sx={{
-              height: "42px",
-              borderRadius: "8px"
-            }}
+              "& .MuiOutlinedInput-root": {
+                height: "42px",
+                borderRadius: "8px",
+                color: "white",
+                backgroundColor: "black",
+                border: "1px solid white",
+                '& .MuiSelect-icon': {
+                  color: 'white',
+                }
+              },
+          }}
+            placeholder="0"
+            className="input-field"
             onChange={(e) => setGrindAmount(e.target.value)}
-          >
-            {GRIND_AMOUNT_MAP.map((value) => (
-              <MenuItem key={value} value={value}>{value}</MenuItem>
-            ))}
-          </Select>
+          />
         </FormControl>
-        <div className="slider-value"></div>
+        {GRIND_AMOUNT_MAP.map((num) => (        <Button
+          sx={{
+            margin: "10px 5px",
+            borderRadius: "8px",
+            fontWeight: 700,
+            minWidth: "unset",
+            color: "white",
+            backgroundColor: "black",
+            border: "1px solid white",
+            textTransform: "none",
+            fontSize: "14px",
+            lineHeight: 1,
+            height: "22px",
+          }}
+          // loading={waitMint}
+          onClick={() => addIntentAmount(num)}
+        >+{num}</Button>))}
       </div>
 
-      <div className="form-group">
-        <label className="label">Reciever wallet (optional)
-          {/* <button className="receiver-button" onClick={handleReceiverMyAddress}>My Address</button> */}
-          <input value={isChangedAddress} onChange={(e) => setIsChangedAddress(e.target.checked)} type="checkbox" />
+      <div className="form-group-1">
+        <label htmlFor="token-select">
+        <Checkbox
+          checked={isChangedAddress}
+          onChange={(e) => setIsChangedAddress(e.target.checked)}
+          sx={{
+            color: 'white',
+            '&.Mui-checked': {
+              color: 'white',
+            },
+          }}
+        />
+          Reciever wallet (optional)
         </label>
-        {isChangedAddress && <input
-          type="text"
-          value={recieverWalletAdress}
-          onChange={(e) => setRecieverWalletAdress(e.target.value)}
-          placeholder="Enter reciever address"
-          className="input"
-        />}
+        {isChangedAddress && <FormControl fullWidth>
+          <TextField
+            id="burn-amount"
+            value={recieverWalletAdress}
+            variant="outlined"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                height: "42px",
+                borderRadius: "8px",
+                color: "white",
+                backgroundColor: "black",
+                border: "1px solid white",
+                '& .MuiSelect-icon': {
+                  color: 'white',
+                }
+              },
+          }}
+            placeholder="0x..."
+            className="input-field"
+            onChange={(e) => setRecieverWalletAdress(e.target.value)}
+          />
+        </FormControl>}
       </div>
 
       <div className="price-container">
         <span className="price-label">Price:</span> <span className="price-value">{price} ETH</span>
       </div>
 
-      <button onClick={handleMint} className="mint-button">
-        Mint
-      </button>
+      <Button
+        className="mint-button"
+        disabled={grindAmount <= 0}
+        sx={{
+          borderRadius: "8px",
+          fontWeight: 700,
+          minWidth: "unset",
+          color: "#006f16",
+          backgroundColor: "#C1FBBA",
+          textTransform: "none",
+          fontSize: "20px",
+          lineHeight: 1,
+          height: "42px",
+          "&.Mui-disabled": {
+            backgroundColor: "rgba(1,1,1,0)",
+            borderStyle: "solid",
+            borderColor: grindAmount <= 0 ? "#949494 !important" : "transparent",
+            borderWidth: grindAmount <= 0 ? "2px" : "0",
+            color: "#949494",
+          },
+        }}
+        // loading={waitMint}
+        onClick={handleMint}
+      >Mint</Button>
     </div>
   );
 }

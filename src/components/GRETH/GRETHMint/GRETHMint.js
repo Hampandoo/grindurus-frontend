@@ -4,7 +4,7 @@ import { useContractService } from '../../../context/ContractContext';
 import { ethers } from 'ethers';
 import config from '../../../config';
 
-import { Button, FormControl, TextField, Select, MenuItem } from '@mui/material';
+import { Button, FormControl, TextField, Checkbox } from '@mui/material';
 
 function GRETHMint({ networkConfig }) {
   const { provider } = useContractService();
@@ -76,9 +76,15 @@ function GRETHMint({ networkConfig }) {
                   variant="outlined"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                        height: "42px",
-                        borderRadius: "8px"
-                      },
+                      height: "42px",
+                      borderRadius: "8px",
+                      color: "white",
+                      backgroundColor: "black",
+                      border: "1px solid white",
+                      '& .MuiSelect-icon': {
+                        color: 'white',
+                      }
+                    },
                   }}
                   placeholder="0 ETH"
                   className="input-field"
@@ -95,30 +101,48 @@ function GRETHMint({ networkConfig }) {
             </div>
           </div>
 
-          <input value={isChangedAddress} onChange={(e) => setIsChangedAddress(e.target.checked)} type="checkbox" />
-          {isChangedAddress && <div className="form-group">
-            <label htmlFor="token-select">Reciever wallet (optional)</label>
-            <FormControl fullWidth>
+          <div className="form-group-1">
+            <label htmlFor="token-select">
+            <Checkbox
+              checked={isChangedAddress}
+              onChange={(e) => setIsChangedAddress(e.target.checked)}
+              sx={{
+                color: 'white',
+                '&.Mui-checked': {
+                  color: 'white',
+                },
+              }}
+            />
+              Reciever wallet (optional)
+            </label>
+            {isChangedAddress && <FormControl fullWidth>
               <TextField
                 id="burn-amount"
                 value={recieverWalletAdress}
                 variant="outlined"
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                      height: "42px",
-                      borderRadius: "8px"
-                    },
-                }}
+                    height: "42px",
+                    borderRadius: "8px",
+                    color: "white",
+                    backgroundColor: "black",
+                    border: "1px solid white",
+                    '& .MuiSelect-icon': {
+                      color: 'white',
+                    }
+                  },
+              }}
                 placeholder="0x..."
                 className="input-field"
                 onChange={(e) => setRecieverWalletAdress(e.target.value)}
               />
-            </FormControl>
-          </div>}
+            </FormControl>}
+          </div>
 
           {/* <p className="estimated-text">Estimated token amount: <span className="font-medium">{`${estimatedTokenAmount}`}</span></p> */}
           <Button
             className="submit-button"
+            disabled={mintAmount <= 0}
             sx={{
               borderRadius: "8px",
               fontWeight: 700,
@@ -126,8 +150,12 @@ function GRETHMint({ networkConfig }) {
               "&.Mui-disabled": {
                 backgroundColor: "rgba(1,1,1,0)",
                 borderStyle: "solid",
+                borderColor: mintAmount <= 0 ? "#949494 !important" : "transparent",
+                borderWidth: mintAmount <= 0 ? "2px" : "0",
+                color: "#949494",
               },
               color: "#006f16",
+              backgroundColor: "#C1FBBA",
               textTransform: "none",
               fontSize: "20px",
               lineHeight: 1,

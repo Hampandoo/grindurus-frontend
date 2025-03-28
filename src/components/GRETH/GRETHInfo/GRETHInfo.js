@@ -43,9 +43,9 @@ function GRETHInfo({ networkConfig }) {
             <div className="info-list">
               {/* TODO//: Add total suply, total grind fields */}
               {tokensBalance.map(token => (
-                <div key={token.label}>
-                  <span>{token.label}: </span>
-                  <span>{token.balance}</span>
+                <div key={token.label} className="token-table-cell">
+                  <div className="token-table-title">{token.label}: </div>
+                  <div className="token-table-value">{token.balance}</div>
                 </div>
               ))}
               {/* <p>Total Grinded: {totalGrinded?.toString()}</p>

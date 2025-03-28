@@ -13,8 +13,8 @@ function MintPoolNFT({ networkConfig }) {
   const [allowance, setAllowance] = useState(0);
 
   const [selectedStrategyId, setSelectedStrategyId] = useState(0);
-  const [selectedQuoteTokenId, setQuoteTokenId] = useState(1);
-  const [selectedBaseTokenId, setBaseTokenId] = useState(0);
+  const [selectedQuoteTokenId, setQuoteTokenId] = useState(networkConfig.quoteTokens[1].symbol);
+  const [selectedBaseTokenId, setBaseTokenId] = useState(networkConfig.baseTokens[0].symbol);
   const [quoteTokenAmount, setQuoteTokenAmount] = useState('');
 
   // Loading button states
@@ -155,6 +155,13 @@ function MintPoolNFT({ networkConfig }) {
       setWaitMint(false);
     }
   };
+  
+  useEffect(() => {
+    // Select state - change quote token if user changed base token to the same
+    if (selectedQuoteTokenId === selectedBaseTokenId) {
+      setQuoteTokenId(networkConfig.quoteTokens[1].symbol === selectedBaseTokenId ? networkConfig.quoteTokens[0].symbol : networkConfig.quoteTokens[1].symbol);
+    }
+  }, [selectedBaseTokenId])
 
   return (
     <div className="mint-nft-pool">
@@ -168,7 +175,13 @@ function MintPoolNFT({ networkConfig }) {
             value={selectedStrategyId}
             sx={{
               height: "42px",
-              borderRadius: "8px"
+              borderRadius: "8px",
+              color: "white",
+              backgroundColor: "black",
+              border: "1px solid white",
+              '& .MuiSelect-icon': {
+                color: 'white',
+              }
             }}
             onChange={(e) => setSelectedStrategyId(e.target.value)}
           >
@@ -185,8 +198,8 @@ function MintPoolNFT({ networkConfig }) {
         </div>
         <div className="select-with-icon">
         <img
-          src={networkConfig.baseTokens[selectedBaseTokenId]?.logo}
-          alt={networkConfig.baseTokens[selectedBaseTokenId]?.symbol}
+            src={networkConfig.baseTokens.find(token => token.symbol === selectedBaseTokenId)?.logo}
+            alt={networkConfig.baseTokens.find(token => token.symbol === selectedBaseTokenId)?.symbol}
           className="token-icon"
         />
         <FormControl fullWidth>
@@ -195,12 +208,18 @@ function MintPoolNFT({ networkConfig }) {
             value={selectedBaseTokenId}
             sx={{
               height: "42px",
-              borderRadius: "8px"
+              borderRadius: "8px",
+              color: "white",
+              backgroundColor: "black",
+              border: "1px solid white",
+              '& .MuiSelect-icon': {
+                color: 'white',
+              }
             }}
             onChange={(e) => setBaseTokenId(e.target.value)}
           >
             {networkConfig.baseTokens.map((tokenInfo, index) => (
-              <MenuItem key={index} value={index}>{tokenInfo.symbol}</MenuItem>
+              <MenuItem key={index} value={tokenInfo.symbol}>{tokenInfo.symbol}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -212,8 +231,8 @@ function MintPoolNFT({ networkConfig }) {
         </div>
         <div className="select-with-icon">
           <img
-            src={networkConfig.quoteTokens[selectedQuoteTokenId]?.logo}
-            alt={networkConfig.quoteTokens[selectedQuoteTokenId]?.symbol}
+            src={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.logo}
+            alt={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.symbol}
             className="token-icon"
           />
           <FormControl fullWidth>
@@ -222,12 +241,18 @@ function MintPoolNFT({ networkConfig }) {
               value={selectedQuoteTokenId}
               sx={{
                 height: "42px",
-                borderRadius: "8px"
+                borderRadius: "8px",
+                color: "white",
+                backgroundColor: "black",
+                border: "1px solid white",
+                '& .MuiSelect-icon': {
+                  color: 'white',
+                }
               }}
               onChange={(e) => setQuoteTokenId(e.target.value)}
             >
-              {networkConfig.quoteTokens.map((tokenInfo, index) => (
-                <MenuItem key={index} value={index}>{tokenInfo.symbol}</MenuItem>
+              {networkConfig.quoteTokens.filter((token) => token.symbol != selectedBaseTokenId).map((tokenInfo, index) => (
+                <MenuItem key={index} value={tokenInfo.symbol}>{tokenInfo.symbol}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -239,8 +264,8 @@ function MintPoolNFT({ networkConfig }) {
         </div>
         <div className="input-with-max">
           <img
-            src={networkConfig.quoteTokens[selectedQuoteTokenId]?.logo}
-            alt={networkConfig.quoteTokens[selectedQuoteTokenId]?.symbol}
+            src={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.logo}
+            alt={networkConfig.quoteTokens.find(token => token.symbol === selectedQuoteTokenId)?.symbol}
             className="token-icon token-last-icon"
           />
           <FormControl fullWidth>
@@ -250,7 +275,13 @@ function MintPoolNFT({ networkConfig }) {
               sx={{
                 "& .MuiOutlinedInput-root": {
                     height: "42px",
-                    borderRadius: "8px"
+                    borderRadius: "8px",
+                    color: "white",
+                    backgroundColor: "black",
+                    border: "1px solid white",
+                    '& .MuiSelect-icon': {
+                      color: 'white',
+                    }
                   },
               }}
               placeholder="0"
@@ -282,8 +313,9 @@ function MintPoolNFT({ networkConfig }) {
               "&.Mui-disabled": {
                 backgroundColor: "rgba(1,1,1,0)",
                 borderStyle: "solid",
-                borderColor: quoteTokenAmount <= 0 ? "rgba(51, 51, 51, 0.1)" : "transparent",
+                borderColor: quoteTokenAmount <= 0 ? "#949494" : "transparent",
                 borderWidth: quoteTokenAmount <= 0 ? "2px" : "0",
+                color: "#949494",
               },
               borderStyle: "solid",
               color: "#c556db",

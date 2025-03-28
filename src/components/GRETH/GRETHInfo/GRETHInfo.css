@@ -3,7 +3,7 @@
   width: 100%; /* Ширина компонента */
   height: 100%;
   font-family: Arial, sans-serif;
-  color: #3d2c43; /* Основной цвет текста */
+  color: white !important; /* Основной цвет текста */
 }
 .greth-row {
   height: 100%;
@@ -21,11 +21,16 @@
 }
 
 .card-title {
-  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 16px;
+  margin-top: 0 !important;
+  color: white !important;
+  font-size: 36px !important;
 }
 
+.info-list {
+  border: 1px solid white;
+  border-radius: 6px;
+}
 .info-list p {
   margin: 4px 0;
 }
@@ -46,4 +51,19 @@
   width: 100%;
   max-width: 300px;
   margin: 0 auto;
+}
+
+.token-table-cell {
+  display: flex;
+}
+.token-table-cell:not(:last-child) {
+  border-bottom: 1px solid white;
+}
+.token-table-title {
+  width: 80px;
+  padding: 8px 12px;
+  border-inline-end: 1px solid white;
+}
+.token-table-value {
+  padding: 8px 12px;
 }
