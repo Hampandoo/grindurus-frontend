@@ -6,6 +6,7 @@ import GRETHMint from './GRETHMint/GRETHMint';
 import GRETHInfo from './GRETHInfo/GRETHInfo.js';
 
 function GRETH({ networkConfig }) {
+  // Зайва логіка. Перемикач не підключений ніде.
   const [mode, setMode] = useState("burn")
   return (
     <div className="greth">
