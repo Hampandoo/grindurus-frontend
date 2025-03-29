@@ -6,19 +6,23 @@ import config from '../../../config';
 
 import { Button, FormControl, TextField, Select, MenuItem, Checkbox } from '@mui/material';
 
+// Сторінка не завантажується, якщо перезавантажити її.
 function GRETHBurn() {
   const { provider } = useContractService();
+  // Треба прибрати змінні що ми не використовуємо
   const { networkConfig, isConnected } = useContractService();
 
   const [burnAmount, setBurnAmount] = useState('');
+  // Треба прибрати змінні що ми не використовуємо
   const [selectedTokenId, selectedTokenIdId] = useState(0);
   const [defaultRecieverWalletAdress, setDefaultRecieverWalletAdress] = useState('');
+  // Треба прибрати змінні що ми не використовуємо
   const [recieverWalletAdress, setRecieverWalletAdress] = useState('');
   const [estimatedTokenAmount, setEstimatedTokenAmount] = useState(0);
 
   const [selectedBaseTokenId, setBaseTokenId] = useState(networkConfig.baseTokens[0].symbol);
 
-  // Form state
+  // Form state - це логіка для чекбоксів, або прибираємо її, або повертаємо чекбокси
   const [isChangedToken, setIsChangedToken] = useState(false);
   const [isChangedAddress, setIsChangedAddress] = useState(false);
 
@@ -44,6 +48,8 @@ function GRETHBurn() {
     setUserWalletAddress();
   }, [provider]);
 
+  // Чому ця логіка закоментована? Змінна estimatedTokenAmount - показує кількість токенів, і має динамічно змінюватись від логіки нижче
+
   // useEffect(() => {
   //   getGrethContract()
   //     .then((resp) => {
@@ -66,6 +72,7 @@ function GRETHBurn() {
       // Prevent sending empty field
       if (!burnAmount || burnAmount < 0) return;
 
+      // Що це? Чому прапори є, а логіка не працює від них? Або варто використовувати дані юзера, апбо повернути логіку чекбоксів
       // Get reciever, if flag true - get address from input, else from user wallet
       const reciever = isChangedAddress ? recieverWalletAdress : defaultRecieverWalletAdress;
       // Get token, if flag true - from select, else WETH is a default token
@@ -182,6 +189,7 @@ function GRETHBurn() {
       </div>
 
       <p className="form-label">Estimated token amount: {`${estimatedTokenAmount}`}</p>
+      {/* Кнопка завжди активна, користувач не має тицяти кнопку скільки йому заманеться, якщо форма пуста, або не правильно заповнена */}
       <button
         className="submit-button"
         onClick={handleBurn}

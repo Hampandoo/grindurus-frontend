@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import Infographic from '../Infographic';
 
 function GRETHInfo({ networkConfig }) {
+  // Чому логіка закоментована? Чому у темплейті мокові значення?
   // const { provider } = useContractService();
 
   // const [tokensBalance, setTokensBalance] = useState([]);

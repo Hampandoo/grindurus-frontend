@@ -43,6 +43,7 @@ function App() {
           <Route path="/greth" element={
             <GRETH networkConfig={networkConfig}/>
           }/>
+          {/* Де сторінка Grinder AI? */}
           <Route path="/pool/:poolId" element={
             <Pool />
           }/>
