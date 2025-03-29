@@ -7,6 +7,7 @@ import config from '../../../config';
 import { Button, FormControl, TextField, Checkbox } from '@mui/material';
 
 function GRETHMint({ networkConfig }) {
+  // Ця форма мінтить grETH - вона має бути на сторіці.
   const { provider } = useContractService();
 
   const [mintAmount, setMintAmount] = useState('');

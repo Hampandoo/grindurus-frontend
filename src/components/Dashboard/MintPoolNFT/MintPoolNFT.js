@@ -20,6 +20,7 @@ function MintPoolNFT({ networkConfig }) {
   const [mode, setMode] = useState("manual");
 
   // Loading button states
+  // Ця логіка нічого не робить, її варто прибрати
   const [waitApproving, setWaitApproving] = useState(false);
   const [waitMint, setWaitMint] = useState(false);
 
@@ -58,7 +59,8 @@ function MintPoolNFT({ networkConfig }) {
         const allowanceFormatted = ethers.formatUnits(allowanceRaw, quoteTokenInfo.decimals);
         setAllowance(allowanceFormatted);
     } catch (error) {
-        console.error("Error checking allowance:", error);
+      // Функція не спрацьовує
+      console.error("Error checking allowance:", error);
         // alert("Failed to check token allowance.");
     }
 } ;
@@ -81,7 +83,8 @@ function MintPoolNFT({ networkConfig }) {
       const balanceRaw = await quoteToken.balanceOf(signer.address) 
       const balance = ethers.formatUnits(balanceRaw, quoteTokenInfo.decimals)
       setQuoteTokenAmount(balance)
-    } catch {
+    } catch (e) {
+      // Виводимо помилку або в формі як помилку валідації, абе через тост, через алерт не можна виводити помилки або дані.
       alert("Failed to fetch balance");
     } finally {
       setWaitApproving(false);
@@ -115,6 +118,7 @@ function MintPoolNFT({ networkConfig }) {
       setIsApproved(true);
 
     } catch (error) {
+      // Не треба виводити помилки в алерти
       alert("Failed to approve tokens.");
     } finally {
       setWaitApproving(false);
@@ -289,6 +293,20 @@ function MintPoolNFT({ networkConfig }) {
             >Mint</button>
           )}
         </div>
+      </div>
+      {/* Кнопка завжди активна, користувач не має тицяти кнопку скільки йому заманеться, якщо форма пуста, або не правильно заповнена */}
+      <div className="form-buttons">
+        {!isApproved ? (
+          <button
+            className="button approve-button"
+            onClick={handleApprove}
+          >Approve</button>
+        ) : (
+          <button
+            className="button mint-button"
+            onClick={handleMint}
+          >Mint</button>
+        )}
       </div>
     </div>
   );
