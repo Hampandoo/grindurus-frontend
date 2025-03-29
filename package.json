@@ -1,9 +1,22 @@
 {
-  "name": "grindurus-frontend",
-  "homepage": "https://triplepaniclabs.github.io/grindurus-frontend",
-  "version": "0.1.0",
-  "private": true,
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "name": "frontend",
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "prebuild": "npm run prebuild --workspaces --if-present",
+    "pretest": "npm run prebuild --workspaces --if-present",
+    "start": "npm start --workspaces --if-present",
+    "test": "npm test --workspaces --if-present"
+  },
+  "type": "module",
+  "workspaces": [
+    "src/frontend_frontend"
+  ],
   "dependencies": {
+<<<<<<< Updated upstream
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -40,5 +53,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+=======
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.1",
+    "@mui/x-data-grid": "^7.28.2",
+    "@reown/appkit": "^1.7.1",
+    "@reown/appkit-adapter-ethers": "^1.7.1",
+    "ethers": "^6.13.5",
+    "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
+    "react-router-dom": "^7.4.1",
+    "web-vitals": "^4.2.4"
+>>>>>>> Stashed changes
   }
 }

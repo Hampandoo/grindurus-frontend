@@ -1,0 +1,44 @@
+.pool-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pool-body {
+    display: flex;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.nav-button {
+    background-color: #7b3fe4;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 0 10px #7b3fe4a0;
+}
+
+.nav-button.disabled {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.nav-button:hover {
+    background-color: #9c5bff;
+    transform: translateY(-2px);
+}
+
+.nav-button:active {
+    background-color: #6a2ecb;
+    transform: scale(0.97);
+}

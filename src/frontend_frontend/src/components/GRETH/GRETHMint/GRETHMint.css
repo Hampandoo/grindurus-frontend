@@ -1,0 +1,20 @@
+.greth-mint-title {
+  font-size: 30px;
+}
+
+.greth-mint-title:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.mint-greth-button {
+  border: 0;
+  width: 100%;
+  padding: 10px;
+  align-self: flex-end;
+}
+
+.greth-mint-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
