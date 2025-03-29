@@ -296,7 +296,7 @@ function MintPoolNFT({ networkConfig }) {
             ))}
           </Select>
         </FormControl>
-      </div>
+        </div>
       </div>
       <div className="form-group">
         <div className="form-label">

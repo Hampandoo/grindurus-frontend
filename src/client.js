@@ -22,5 +22,10 @@ createAppKit({
   features: {
     analytics: true,
     connectMethodsOrder: ['wallet']
+  },
+  themeVariables: {
+    '--w3m-font-family': 'Noto Sans Mono',
+    '--w3m-color-mix': '#000',
+    '--w3m-accent': '#933DC9'
   }
 })

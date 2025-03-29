@@ -2,7 +2,6 @@
 .greth-info-container {
   width: 100%; /* Ширина компонента */
   height: 100%;
-  font-family: Arial, sans-serif;
   color: white; /* Основной цвет текста */
 }
 .greth-row {

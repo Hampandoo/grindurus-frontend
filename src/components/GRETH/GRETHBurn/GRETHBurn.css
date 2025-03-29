@@ -1,12 +1,51 @@
-/* GRETHBurn.css */
+.form {
+  width: 50%;
+	border: 1px solid #fff;
+	border-radius: 8px;
+	padding: 30px;
+}
+
+.form-group:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.form-label:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.form-input {
+  font-size: 20px;
+  display: flex;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.form-input input {
+  font-size: 20px;
+  padding: 20px 15px;
+  border: 0;
+}
+
+.max-button {
+  font-size: 16px;
+  background-color: #933DC9;
+  padding: 20px 30px;
+  border: 0;
+  border-left: 1px solid #fff;
+}
+
 .greth-burn {
-  width: 100%; /* Фиксированная ширина окна */
+  width: 100%;
   padding: 20px;
   background: black;
   border: 1px solid white;
   border-radius: 15px;
-  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
-  font-family: Arial, sans-serif;
   box-sizing: border-box;
 }
     
@@ -35,52 +74,12 @@
   align-items: center;
 }
 
-label {
-  font-size: 18px;
-  color: white;
-  font-weight: bold;
-}
-
-.input-wrapper {
-  position: relative;
-}
-
-.input-field {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid white;
-  border-radius: 6px;
-  font-size: 1rem;
-}
-
-.max-button {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: black;
-  border: none;
-  padding: 4px 8px;
-  font-size: 0.9rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.max-button:hover {
-  background-color: #d4d4d4;
-}
-
-.estimated-text {
-  font-size: 16px;
-  color: white;
-  text-align: start;
-}
-
 .submit-button {
-  background-color: #C1FBBA;
-  color: white;
+  width: 100%;
+  background-color: #933DC9;
+  color: #fff;
   border: none;
-  padding: 10px;
+  padding: 20px 15px;
   font-size: 1rem;
   border-radius: 6px;
   cursor: pointer;

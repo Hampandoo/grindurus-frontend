@@ -6,14 +6,17 @@ import config from '../../../config';
 
 import { Button, FormControl, TextField, Select, MenuItem, Checkbox } from '@mui/material';
 
-function GRETHBurn({ networkConfig }) {
+function GRETHBurn() {
   const { provider } = useContractService();
+  const { networkConfig, isConnected } = useContractService();
 
   const [burnAmount, setBurnAmount] = useState('');
   const [selectedTokenId, selectedTokenIdId] = useState(0);
   const [defaultRecieverWalletAdress, setDefaultRecieverWalletAdress] = useState('');
   const [recieverWalletAdress, setRecieverWalletAdress] = useState('');
   const [estimatedTokenAmount, setEstimatedTokenAmount] = useState(0);
+
+  const [selectedBaseTokenId, setBaseTokenId] = useState(networkConfig.baseTokens[0].symbol);
 
   // Form state
   const [isChangedToken, setIsChangedToken] = useState(false);
@@ -25,7 +28,10 @@ function GRETHBurn({ networkConfig }) {
     setDefaultRecieverWalletAdress(address);
   }
   const getGrethContract = async () => {
-    if (!provider) console.error('Provider not found')
+    if (!provider) {
+      console.error('Provider not found')
+      return
+    }
     const signer = await provider.getSigner();
     const grethAddress = networkConfig.GRETH;
     return new ethers.Contract(grethAddress, networkConfig.grethABI, signer);
@@ -38,21 +44,21 @@ function GRETHBurn({ networkConfig }) {
     setUserWalletAddress();
   }, [provider]);
 
-  useEffect(() => {
-    getGrethContract()
-      .then((resp) => {
-        if (!resp) return;
-        // TODO//: Input value can't be more than user balance of grETH - grethToken.balansOf(userAddress)
-        resp.calcShare(ethers.parseUnits(`${burnAmount}` || "0", 18), networkConfig.quoteTokens[selectedTokenId].address)
-          .then((resp) => {
-            setEstimatedTokenAmount(ethers.formatUnits(resp, networkConfig.quoteTokens[selectedTokenId].decimals));
-          })
-          .catch(e => {
-            console.dir(e);
-          })
-      })
+  // useEffect(() => {
+  //   getGrethContract()
+  //     .then((resp) => {
+  //       if (!resp) return;
+  //       // TODO//: Input value can't be more than user balance of grETH - grethToken.balansOf(userAddress)
+  //       resp.calcShare(ethers.parseUnits(`${burnAmount}` || "0", 18), networkConfig.quoteTokens[selectedTokenId].address)
+  //         .then((resp) => {
+  //           setEstimatedTokenAmount(ethers.formatUnits(resp, networkConfig.quoteTokens[selectedTokenId].decimals));
+  //         })
+  //         .catch(e => {
+  //           console.dir(e);
+  //         })
+  //     })
     
-  }, [burnAmount, selectedTokenId]);
+  // }, [burnAmount, selectedTokenId]);
 
   const handleBurn = async (e) => {
     e.preventDefault();
@@ -81,160 +87,106 @@ function GRETHBurn({ networkConfig }) {
   };
 
   return (
-    <div className="greth-burn">
-        <div className="greth-burn-title">
-          Exchange grETH to Token
-        </div>
-        <form className="exchange-form">
-          <div className="form-group">
-            <label htmlFor="burn-amount">grETH to burn</label>
-            <div className="input-wrapper">
-              <FormControl fullWidth>
-                <TextField
-                  id="burn-amount"
-                  value={burnAmount}
-                  variant="outlined"
-                  sx={{
-                      "& .MuiOutlinedInput-root": {
-                        height: "42px",
-                        borderRadius: "8px",
-                        color: "white",
-                        backgroundColor: "black",
-                        border: "1px solid white",
-                        '& .MuiSelect-icon': {
-                          color: 'white',
-                        }
-                      },
-                  }}
-                  placeholder="0"
-                  className="input-field"
-                  onChange={(e) => setBurnAmount(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={handleMaxClick}
-                  className="max-button"
-                >
-                  Max
-                </button>
-              </FormControl>
-            </div>
+    <form className="burn-form form">
+      <div className="form-group">
+        <label className="form-label">Burn grETH Amount</label>
+        <div className="form-input">
+          <input
+            value={burnAmount}
+            variant="outlined"
+            placeholder="0"
+            onChange={(e) => setBurnAmount(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={handleMaxClick}
+            className="max-button"
+          >
+            Max
+          </button>
           </div>
+      </div>
 
-          <div className="form-group-1">
-          <label htmlFor="token-select">
-          <Checkbox
-              checked={isChangedToken}
-              onChange={(e) => setIsChangedToken(e.target.checked)}
-              sx={{
-                color: 'white',
-                '&.Mui-checked': {
-                  color: 'white',
-                },
-              }}
-            />
-            Token to earn (optional)
-          </label>
-            {isChangedToken && <div className="form-group-w-icon">
-              <img
-                src={networkConfig.quoteTokens[selectedTokenId]?.logo}
-                alt={networkConfig.quoteTokens[selectedTokenId]?.symbol}
-                className="token-icon"
-              />
-              <FormControl fullWidth>
-                {/* <InputLabel>Виберіть опцію</InputLabel> */}
-                <Select
-                  value={selectedTokenId}
-                  sx={{
-                    height: "42px",
-                    borderRadius: "8px",
-                    color: "white",
-                    backgroundColor: "black",
-                    border: "1px solid white",
-                    '& .MuiSelect-icon': {
-                      color: 'white',
-                    }
-                  }}
-                  onChange={(e) => selectedTokenIdId(e.target.value)}
-                >
-                  {networkConfig.baseTokens.map((tokenInfo, index) => (
-                    <MenuItem key={index} value={index}>{tokenInfo.symbol}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div> }
-          </div>
-
-          <div className="form-group-1">
-            <label htmlFor="token-select">
-            <Checkbox
-              checked={isChangedAddress}
-              onChange={(e) => setIsChangedAddress(e.target.checked)}
-              sx={{
-                color: 'white',
-                '&.Mui-checked': {
-                  color: 'white',
-                },
-              }}
-            />
-              Reciever wallet (optional)
-            </label>
-            {isChangedAddress && <FormControl fullWidth>
-              <TextField
-                id="burn-amount"
-                value={recieverWalletAdress}
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    height: "42px",
-                    borderRadius: "8px",
-                    color: "white",
-                    backgroundColor: "black",
-                    border: "1px solid white",
-                    '& .MuiSelect-icon': {
-                      color: 'white',
-                    }
-                  },
-              }}
-                placeholder="0x..."
-                className="input-field"
-                onChange={(e) => setRecieverWalletAdress(e.target.value)}
-              />
-            </FormControl>}
-          </div>
-
-          <p className="estimated-text">Estimated token amount: <span className="font-medium">{`${estimatedTokenAmount}`}</span></p>
-          <Button
-            className="submit-button"
-            disabled={burnAmount <= 0}
-            // variant={waitMint ? 'variant' : 'contained'}
-            // disabled={quoteTokenAmount <= 0 || allowance < quoteTokenAmount}
+      <div className="form-group">
+        <div className="form-label">Receive Token</div>
+        <FormControl fullWidth>
+          <Select
+            value={selectedBaseTokenId}
             sx={{
-              borderRadius: "8px",
-              fontWeight: 700,
-              minWidth: "unset",
-              backgroundColor: "#f7e1fc",
-              borderColor: "transparent",
-              borderWidth: "0",
-              borderStyle: "solid",
-              color: "#c556db",
-              textTransform: "none",
+              width: "100%",
+              display: "flex",
+              gap: "30px",
+              justifyContent: "flex-start",
+              fontFamily: "Noto Sans Mono",
               fontSize: "20px",
-              lineHeight: 1,
-              height: "42px",
-              "&.Mui-disabled": {
-                backgroundColor: "rgba(1,1,1,0)",
-                borderStyle: "solid",
-                borderColor: burnAmount <= 0 ? "#949494 !important" : "transparent",
-                borderWidth: burnAmount <= 0 ? "2px" : "0",
-                color: "#949494",
+              fontWeight: "800",
+              alignItems: "center",
+              borderRadius: "8px",
+              color: "white",
+              backgroundColor: "black",
+              border: "1px solid white",
+              '& .MuiSelect-icon': {
+                color: 'white',
+              }, 
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'black',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'black',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'white',
+              },
+              '& .MuiSelect-select': {
+                padding: '15px',
+                color: 'white', 
+              },
+            }} MenuProps={{
+              disableScrollLock: true,
+              PaperProps: {
+                sx: {
+                  backgroundColor: '#1a1a1a',
+                  color: 'white',
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  border: "1px solid white"
+                },
               },
             }}
-            // loading={waitMint}
-            onClick={handleBurn}
-          >Burn</Button>
-        </form>
-    </div>
+            onChange={(e) => setBaseTokenId(e.target.value)}
+          >
+            {networkConfig.baseTokens.map((tokenInfo, index) => (
+              <MenuItem key={index} value={tokenInfo.symbol} sx={{
+                display: "flex",
+                alignItems: "center",
+                color: "white",
+                fontFamily: "Noto Sans Mono",
+                fontSize: "20px",
+                fontWeight: "800",
+                backgroundColor: "#1a1a1a",
+                padding: "15px",
+                ":not(:last-child)": {
+                  borderBottom: "1px solid white"
+                }
+              }}>
+                <img
+                  src={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.logo}
+                  alt={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.symbol}
+                  className="token-icon"
+                />
+                {tokenInfo.symbol}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+
+      <p className="form-label">Estimated token amount: {`${estimatedTokenAmount}`}</p>
+      <button
+        className="submit-button"
+        onClick={handleBurn}
+      >Burn</button>
+    </form>
   );
 }
 

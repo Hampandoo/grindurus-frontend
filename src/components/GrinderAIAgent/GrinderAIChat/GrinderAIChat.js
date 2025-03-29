@@ -48,17 +48,16 @@ function GrinderAIChat() {
   };
 
   return (
-    <div>
-      {/* Іконка чату в правому кутку */}
+    <div className="chat">
       <div className="chat-icon" onClick={toggleChatWindow}>
         <span role="img" aria-label="robot">🤖</span>
       </div>
 
-      {/* Вікно чату */}
       {isChatOpen && (
-        <div className="chat-container">
-          {/* Кнопка закриття чату */}
-          <button className="close-chat" onClick={closeChat}>✖</button>
+        <div className="chat-window">
+          <div className="chat-header">
+            <button className="close-chat" onClick={closeChat}>✖</button>
+          </div>
           <div className="chat-messages">
             {messages.map((m) => (
               <div key={m.id} className={`message ${m.role}`}>
@@ -67,7 +66,7 @@ function GrinderAIChat() {
             ))}
             {isTyping && (
               <div className="typing-indicator">
-                <span>AI печатает...</span>
+                <span>AI is typing...</span>
               </div>
             )}
             <div ref={messagesEndRef} />

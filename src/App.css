@@ -104,19 +104,6 @@
   border-radius: 8px; /* Закругленные углы */
 }
 
-.greth-content {
-  position: relative;
-  width: 100%;
-  max-width: 80%;
-  margin-top: 15px;
-  margin-bottom: 190px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
 .grinder-content {
   position: relative;
   width: 100%;

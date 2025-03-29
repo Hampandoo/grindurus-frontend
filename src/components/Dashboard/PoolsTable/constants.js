@@ -1,6 +1,6 @@
 import {Button} from "@mui/material";
 import React from "react";
-import Visible from "../../../assets/images/visible.png";
+import visible from "../../../assets/images/eye.svg";
 
 export const POOL_TABLE_COLUMNS = [
   {
@@ -27,7 +27,7 @@ export const POOL_TABLE_COLUMNS = [
     disableColumnMenu: true,
     resizable: false,
     renderCell: (params) => (
-      <img src={Visible} alt='visible' onClick={() => params.row.handleViewPool(params.row.poolId)} />
+      <img src={visible} alt='visible' style={{cursor: "pointer"}} onClick={() => params.row.handleViewPool(params.row.poolId)} />
     )
   },
   {
@@ -74,7 +74,10 @@ export const POOL_TABLE_COLUMNS = [
     renderCell: (params) => (
       <Button
         variant="contained"
-        color="primary"
+        sx={{
+          backgroundColor: "#933DC9",
+          textTransform: "none"
+        }}
         onClick={() => params.row.handleBuyRoyalty(params.row.poolId, params.row.buyRoyaltyPrice)}
       >
         Buy {params.row.buyRoyaltyPrice} ETH
@@ -94,7 +97,10 @@ export const POOL_TABLE_COLUMNS = [
     renderCell: (params) => (
       <Button
         variant="contained"
-        color="secondary"
+        sx={{
+          backgroundColor: "#933DC9",
+          textTransform: "none"
+        }}
         onClick={() => params.row.handleGrind(params.row.poolId)}
       >
         Grind

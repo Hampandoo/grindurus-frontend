@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import Dashboard from './components/Dashboard/Dashboard.js';
+import GRETH from './components/GRETH/GRETH';
 import {useContractService} from "./context/ContractContext";
 import {
   Route,
@@ -38,6 +39,9 @@ function App() {
             <RouterGuard networkConfig={networkConfig} isConnected={isConnected}>
               <Dashboard poolId={poolId} setPoolId={setPoolId} networkConfig={networkConfig}/>
             </RouterGuard>
+          }/>
+          <Route path="/greth" element={
+            <GRETH networkConfig={networkConfig}/>
           }/>
           <Route path="/pool/:poolId" element={
             <Pool />

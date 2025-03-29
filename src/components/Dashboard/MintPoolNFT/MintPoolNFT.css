@@ -23,6 +23,7 @@
   display: flex;
   border: 1px solid #fff;
   border-radius: 8px;
+  overflow: hidden;
 }
 
 .form-input input {
