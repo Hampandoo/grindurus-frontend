@@ -24,19 +24,9 @@ function MintPoolNFT({ networkConfig }) {
   const [waitApproving, setWaitApproving] = useState(false);
   const [waitMint, setWaitMint] = useState(false);
 
-  // Provider added as dependency for checking allowance after user connect wallet
   useEffect(() => {
     checkAllowance();
-  }, [networkConfig, selectedQuoteTokenId, provider]);
-  useEffect(() => {
-    if (allowance > 0 && quoteTokenAmount <= allowance) {
-      setIsApproved(true);
-    } else if (allowance > 0) {
-      setIsApproved(false);
-    } else {
-      setIsApproved(false);
-    }
-  }, [quoteTokenAmount]);
+  }, [networkConfig, selectedQuoteTokenId, provider, quoteTokenAmount]);
 
   const checkAllowance = async () => {
     try {
@@ -44,26 +34,25 @@ function MintPoolNFT({ networkConfig }) {
         return;
       }
         const signer = await provider.getSigner();
-        const userAddress = signer.getAddress();
+        const userAddress = await signer.getAddress();
         const spenderAddress = networkConfig.poolsnft;
-
-        const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
-
+        const quoteTokenInfo = networkConfig.quoteTokens.find((quoteTokenInfo) => quoteTokenInfo.symbol == selectedQuoteTokenId);
         const quoteToken = new ethers.Contract(
             quoteTokenInfo.address,
             ["function allowance(address owner, address spender) external view returns (uint256)"],
             signer
         );
-
         const allowanceRaw = await quoteToken.allowance(userAddress, spenderAddress);
         const allowanceFormatted = ethers.formatUnits(allowanceRaw, quoteTokenInfo.decimals);
-        setAllowance(allowanceFormatted);
+        if (Number(quoteTokenAmount) <= Number(allowanceFormatted)) {
+          setIsApproved(true)
+        } else {
+          setIsApproved(false)
+        }
     } catch (error) {
-      // Функція не спрацьовує
-      console.error("Error checking allowance:", error);
-        // alert("Failed to check token allowance.");
+        console.error("Error checking allowance:", error);
     }
-} ;
+  };
 
   const handleMaxDepositQuoteToken = async () => {
     try {
@@ -72,7 +61,7 @@ function MintPoolNFT({ networkConfig }) {
       }
       setWaitApproving(true);
       const signer = await provider.getSigner();
-      const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
+      const quoteTokenInfo = networkConfig.quoteTokens.find((quoteTokenInfo) => quoteTokenInfo.symbol == selectedQuoteTokenId);
       const quoteToken = new ethers.Contract(
         quoteTokenInfo.address,
         [
@@ -83,8 +72,7 @@ function MintPoolNFT({ networkConfig }) {
       const balanceRaw = await quoteToken.balanceOf(signer.address) 
       const balance = ethers.formatUnits(balanceRaw, quoteTokenInfo.decimals)
       setQuoteTokenAmount(balance)
-    } catch (e) {
-      // Виводимо помилку або в формі як помилку валідації, абе через тост, через алерт не можна виводити помилки або дані.
+    } catch {
       alert("Failed to fetch balance");
     } finally {
       setWaitApproving(false);
@@ -99,7 +87,7 @@ function MintPoolNFT({ networkConfig }) {
       setWaitApproving(true);
       const signer = await provider.getSigner();
 
-      const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
+      const quoteTokenInfo = networkConfig.quoteTokens.find((quoteTokenInfo) => quoteTokenInfo.symbol == selectedQuoteTokenId);
 
       const quoteToken = new ethers.Contract(
         quoteTokenInfo.address,
@@ -118,7 +106,6 @@ function MintPoolNFT({ networkConfig }) {
       setIsApproved(true);
 
     } catch (error) {
-      // Не треба виводити помилки в алерти
       alert("Failed to approve tokens.");
     } finally {
       setWaitApproving(false);
@@ -135,13 +122,13 @@ function MintPoolNFT({ networkConfig }) {
 
       const poolsNFTAddress = networkConfig.poolsnft;
       const strategyId = networkConfig.strategies[selectedStrategyId].id;
-      const quoteTokenInfo = networkConfig.quoteTokens[selectedQuoteTokenId];
-      const baseTokenInfo = networkConfig.baseTokens[selectedBaseTokenId];
+      const baseTokenInfo = networkConfig.baseTokens.find((baseTokenInfo) => baseTokenInfo.symbol == selectedBaseTokenId);
+      const quoteTokenInfo = networkConfig.quoteTokens.find((quoteTokenInfo) => quoteTokenInfo.symbol == selectedQuoteTokenId);
 
       const poolsNFT = new ethers.Contract(
         poolsNFTAddress,
         [
-          "function mint(uint16 strategyId,address quoteToken,address baseToken,uint256 quoteTokenAmount)",
+          "function mint(uint16 strategyId,address baseToken,address quoteToken,uint256 quoteTokenAmount)",
         ],
         signer
       );
