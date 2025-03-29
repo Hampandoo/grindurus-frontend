@@ -153,14 +153,13 @@
   
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #933DC9 #2f2f2f;
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+* {
+  scrollbar-width: none;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -180,4 +179,44 @@
 
 ::-webkit-scrollbar-track:hover {
   background-color: #333333;
+}
+
+.form {
+  width: 100%;
+	border: 1px solid #fff;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.form-group:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.form-label {
+  font-weight: 700;
+}
+
+.form-label:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.form-input {
+  display: flex;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.form-input input {
+  font-size: 16px;
+  padding: 10px;
+  border: 0;
+}
+
+.max-button {
+  font-size: 16px;
+  background-color: #933DC9;
+  padding: 10px;
+  border: 0;
+  border-left: 1px solid #fff;
 }

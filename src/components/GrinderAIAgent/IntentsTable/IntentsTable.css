@@ -49,3 +49,17 @@
   .intents-table td {
     color: #4a4a4a;
   }
+
+.intents-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.intents-table-header:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.intents-table-title {
+  font-size: 30px;
+}

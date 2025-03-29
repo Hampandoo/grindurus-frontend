@@ -3,6 +3,7 @@ import './GRETHBurn.css';
 import { useContractService } from '../../../context/ContractContext';
 import { ethers } from 'ethers';
 import config from '../../../config';
+import { selectStyles, menuProps, menuItemStyles, menuTokenItemStyles } from "../../../styles";
 
 import { Button, FormControl, TextField, Select, MenuItem, Checkbox } from '@mui/material';
 
@@ -87,9 +88,10 @@ function GRETHBurn() {
   };
 
   return (
-    <form className="burn-form form">
+    <form className="greth-burn-form form">
+      <h2 className="greth-form-title">Burn and Get Tokens</h2>
       <div className="form-group">
-        <label className="form-label">Burn grETH Amount</label>
+        <div className="form-label">Burn grETH Amount</div>
         <div className="form-input">
           <input
             value={burnAmount}
@@ -104,81 +106,30 @@ function GRETHBurn() {
           >
             Max
           </button>
-          </div>
+        </div>
       </div>
 
       <div className="form-group">
         <div className="form-label">Receive Token</div>
         <FormControl fullWidth>
-          <Select
-            value={selectedBaseTokenId}
-            sx={{
-              width: "100%",
-              display: "flex",
-              gap: "30px",
-              justifyContent: "flex-start",
-              fontFamily: "Noto Sans Mono",
-              fontSize: "20px",
-              fontWeight: "800",
-              alignItems: "center",
-              borderRadius: "8px",
-              color: "white",
-              backgroundColor: "black",
-              border: "1px solid white",
-              '& .MuiSelect-icon': {
-                color: 'white',
-              }, 
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'black',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'black',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'white',
-              },
-              '& .MuiSelect-select': {
-                padding: '15px',
-                color: 'white', 
-              },
-            }} MenuProps={{
-              disableScrollLock: true,
-              PaperProps: {
-                sx: {
-                  backgroundColor: '#1a1a1a',
-                  color: 'white',
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  border: "1px solid white"
-                },
-              },
-            }}
-            onChange={(e) => setBaseTokenId(e.target.value)}
-          >
-            {networkConfig.baseTokens.map((tokenInfo, index) => (
-              <MenuItem key={index} value={tokenInfo.symbol} sx={{
-                display: "flex",
-                alignItems: "center",
-                color: "white",
-                fontFamily: "Noto Sans Mono",
-                fontSize: "20px",
-                fontWeight: "800",
-                backgroundColor: "#1a1a1a",
-                padding: "15px",
-                ":not(:last-child)": {
-                  borderBottom: "1px solid white"
-                }
-              }}>
-                <img
-                  src={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.logo}
-                  alt={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.symbol}
-                  className="token-icon"
-                />
-                {tokenInfo.symbol}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            <Select
+              value={selectedBaseTokenId}
+              sx={selectStyles} 
+              MenuProps={menuProps}
+              onChange={(e) => setBaseTokenId(e.target.value)}
+            >
+              {networkConfig.baseTokens.map((tokenInfo, index) => (
+                <MenuItem key={index} value={tokenInfo.symbol} sx={menuTokenItemStyles}>
+                  <img
+                    src={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.logo}
+                    alt={networkConfig.baseTokens.find(token => token.symbol === tokenInfo.symbol)?.symbol}
+                    className="token-icon"
+                  />
+                  {tokenInfo.symbol}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
       </div>
 
       <p className="form-label">Estimated token amount: {`${estimatedTokenAmount}`}</p>

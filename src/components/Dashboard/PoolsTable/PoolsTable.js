@@ -218,15 +218,15 @@ function PoolsTable() {
   };
 
   return (
-    <>
+    <div className="pools-table">
       <div class="pools-table-header">
-        <h2 class="pools-table-title title">Explore All Pools</h2>
+        <h2 className="pools-table-title">Explore Pools NFTs</h2>
         <div class="pools-table-search search">
           <input onChange={handleSearch} placeholder="Search with pool id or owner address" type="text" class="search-input" />
           <button class="search-button">Search</button>
         </div>
 			</div>
-      <div style={{ width: "100%"}}>
+      <div style={{ width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={POOL_TABLE_COLUMNS}
@@ -238,45 +238,70 @@ function PoolsTable() {
           hideFooterSelectedRowCount
           onRowDoubleClick={(params) => handleViewPool(params.row.poolId)}
           slots={{ pagination: CustomPagination }}
-          style={{maxHeight: "800px"}}
+          style={{ maxHeight: "800px" }}
           getRowHeight={() => "auto"}
           sx={{
+            borderCollapse: "collapse",
             "& .MuiDataGrid-topContainer": {
-              padding: "0"
+              padding: "0",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "black",
+              padding: "0",
+              minHeight: "40px !important",
+              maxHeight: "40px !important",
             },
             "& .MuiDataGrid-columnHeader": {
-              backgroundColor: "black", // Черный фон для заголовков
-              color: "white", // Белый цвет текста
-              fontWeight: "bold", // Опционально: жирный текст
-              borderRight: "1px solid white"
+              padding: "15px !important",
+              backgroundColor: "black",
+              color: "white",
+              borderRight: "1px solid white",
+              fontWeight: "800 !important",
             },
             "& .MuiDataGrid-columnHeader:focus": {
               outline: "none",
             },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "black", // Фон заголовков
-            },
             "& .MuiDataGrid-cell": {
+              padding: "35px 15px !important",
               color: "white",
               display: "flex",
               alignItems: "center",
-              borderRight: "1px solid rgba(224, 224, 224, 1)",
+              borderRight: "1px solid white",
               height: "auto !important",
-              minHeight: "80px !important",
             },
             "& .MuiDataGrid-cell:focus": {
-              outline: 'none',
+              outline: "none",
             },
             "& .MuiDataGrid-row": {
-              borderBottom: "1px solid rgba(224, 224, 224, 1)",
+              borderBottom: "1px solid white",
             },
             "& .MuiDataGrid-footerContainer": {
               justifyContent: "center",
+              padding: "20px",
+            },
+            "& .MuiTablePagination-root": {
+              backgroundColor: "black",
+              color: "white",
+              borderTop: "2px solid white",
+            },
+            "& .MuiTablePagination-root .MuiSvgIcon-root": {
+              color: "white",
+            },
+            "& .MuiPaginationItem-root": {
+              opacity: "1",
+              borderRadius: "50%",
+              color: "white",
+              border: "1px solid white",
+              padding: "10px", 
+            },
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#933DC9",
+              color: "white",
             },
           }}
         />
       </div>
-    </>
+    </div>
   );
 }
 

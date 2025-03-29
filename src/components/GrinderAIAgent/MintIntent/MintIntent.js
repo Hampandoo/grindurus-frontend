@@ -94,120 +94,60 @@ function MintIntent({ networkConfig }) {
   }
 
   return (
-    <div className="mint-intent-container">
-      <div className="mint-intent-title">Mint Intent</div>
-      <div className="mint-intent-description">Intent for grinderAI to grind all pools related to your wallet</div>
-
-      <div className="intent-period">
-        <label className="label">Intent Amount ~ ({grindAmount} times)</label>
-        <FormControl fullWidth>
-          {/* <InputLabel>Виберіть опцію</InputLabel> */}
-          <TextField
-            id="burn-amount"
+    <div className="intent-form form">
+      <h2 className="mint-intent-title">Intent NFT</h2>
+      <div className="mint-intent-description">
+        <p>Holds grinds amoutn for auto grinding with GrinderAI</p>
+      </div>
+      <div className="form-group">
+        <div className="form-label">Grinds Amount ~ ({grindAmount} times)</div>
+        <div className="form-input intent-amount-input">
+          <input
             value={grindAmount}
-            variant="outlined"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                height: "42px",
-                borderRadius: "8px",
-                color: "white",
-                backgroundColor: "black",
-                border: "1px solid white",
-                '& .MuiSelect-icon': {
-                  color: 'white',
-                }
-              },
-          }}
             placeholder="0"
-            className="input-field"
             onChange={(e) => setGrindAmount(e.target.value)}
           />
-        </FormControl>
-        {GRIND_AMOUNT_MAP.map((num) => (        <Button
-          sx={{
-            margin: "10px 5px",
-            borderRadius: "8px",
-            fontWeight: 700,
-            minWidth: "unset",
-            color: "white",
-            backgroundColor: "black",
-            border: "1px solid white",
-            textTransform: "none",
-            fontSize: "14px",
-            lineHeight: 1,
-            height: "22px",
-          }}
-          // loading={waitMint}
-          onClick={() => addIntentAmount(num)}
-        >+{num}</Button>))}
+        </div>
+        <div className="intent-amount-buttons">
+          {GRIND_AMOUNT_MAP.map((num) => (
+          <button className="intent-amount-button"
+            onClick={() => addIntentAmount(num)}
+          >+{num}</button>))}
+        </div>
       </div>
-
-      <div className="form-group-1">
-        <label htmlFor="token-select">
+      <div className="form-group">
+        <div className="form-label">
         <Checkbox
           checked={isChangedAddress}
           onChange={(e) => setIsChangedAddress(e.target.checked)}
           sx={{
+            padding: "0",
             color: 'white',
+            paddingRight: "10px",
             '&.Mui-checked': {
+              padding: "0",
               color: 'white',
+              paddingRight: "10px"
             },
           }}
         />
           Reciever wallet (optional)
-        </label>
-        {isChangedAddress && <FormControl fullWidth>
-          <TextField
-            id="burn-amount"
+        </div>
+        {isChangedAddress && <div className="form-input">
+          <input
             value={recieverWalletAdress}
-            variant="outlined"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                height: "42px",
-                borderRadius: "8px",
-                color: "white",
-                backgroundColor: "black",
-                border: "1px solid white",
-                '& .MuiSelect-icon': {
-                  color: 'white',
-                }
-              },
-          }}
             placeholder="0x..."
-            className="input-field"
             onChange={(e) => setRecieverWalletAdress(e.target.value)}
           />
-        </FormControl>}
+        </div>}
       </div>
-
-      <div className="price-container">
+      <div className="form-label">
         <span className="price-label">Price:</span> <span className="price-value">{price} ETH</span>
       </div>
-
-      <Button
-        className="mint-button"
-        disabled={grindAmount <= 0}
-        sx={{
-          borderRadius: "8px",
-          fontWeight: 700,
-          minWidth: "unset",
-          color: "#006f16",
-          backgroundColor: "#C1FBBA",
-          textTransform: "none",
-          fontSize: "20px",
-          lineHeight: 1,
-          height: "42px",
-          "&.Mui-disabled": {
-            backgroundColor: "rgba(1,1,1,0)",
-            borderStyle: "solid",
-            borderColor: grindAmount <= 0 ? "#949494 !important" : "transparent",
-            borderWidth: grindAmount <= 0 ? "2px" : "0",
-            color: "#949494",
-          },
-        }}
-        // loading={waitMint}
+      <button
+        className="mint-intent-button"
         onClick={handleMint}
-      >Mint</Button>
+      >Mint</button>
     </div>
   );
 }

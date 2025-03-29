@@ -1,106 +1,55 @@
-.mint-intent-container {
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  color: white;
-  background-color: black;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-
-  border: 1px solid white;
+.intent-amount-input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-.mint-intent-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
-  color: white;
-}
-
-.mint-intent-description {
-  font-weight: bold;
-  text-align: center;
-  color: white;
-  margin-bottom: 10px;
-}
-
-.intent-period {
-  /* margin-bottom: 20px; */
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.label {
-  display: block;
-  font-weight: bold;
-  font-size: 20px;
-  margin-bottom: 8px;
-}
-
-.receiver-button {
-  margin-left: 10px;
-  width: 30%;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #ff69b4;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.slider {
+.intent-amount-buttons {
   width: 100%;
-}
-
-.slider-value {
-  text-align: right;
-  margin-top: 5px;
-  font-size: 0.9rem;
-  color: #4a4a4a;
-}
-
-.input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.price-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 0;
-  font-size: 1rem;
+  border: 1px solid #fff;
+  border-top: 0;
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  overflow: hidden;
 }
 
-.price-label {
-  font-weight: bold;
-  color: white;
-}
-
-.price-value {
-  color: #d354f8;
-  font-weight: bold;
-}
-
-.mint-button {
-  width: 100%;
-  padding: 15px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: white;
-  background-color: #ff69b4;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.intent-amount-button {
+  border: 0;
+  flex-grow: 1;
+  padding: 10px;
   transition: background-color 0.3s ease;
 }
 
-.mint-button:hover {
-  /* background-color: #ff4081; */
+.intent-amount-button:hover {
+  background-color: #2b2b2b;
+}
+
+.intent-amount-button:not(:last-child) {
+  border-right: 1px solid #fff;
+}
+
+.intent-form {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mint-intent-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #933DC9;
+  border-radius: 8px;
+}
+
+.mint-intent-title {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.mint-intent-description {
+  margin-bottom: 10px;
 }

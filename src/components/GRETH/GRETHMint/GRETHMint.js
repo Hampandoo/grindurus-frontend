@@ -61,111 +61,66 @@ function GRETHMint({ networkConfig }) {
   };
 
   return (
-    <div className="greth-burn">
-        <div className="greth-burn-title">
-          You can exchange grETH to token
+    <form className="greth-mint-form form">
+      <div className="greth-mint-title">
+        Mint grETH
+      </div>
+      <div className="form-group">
+        <div className="form-label">grETH to mint (ETH)</div>
+        <div className="form-input">
+          <input
+            value={mintAmount}
+            variant="outlined"
+            placeholder="0"
+            className="input-field"
+            onChange={(e) => setMintAmount(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={handleMaxClick}
+            className="max-button"
+          >
+            Max
+          </button>
         </div>
-        <form className="exchange-form">
-          <div className="form-group">
-            <label htmlFor="burn-amount">grETH to mint (ETH)</label>
-            <div className="input-wrapper">
-              <FormControl fullWidth>
-                <TextField
-                  id="burn-amount"
-                  value={mintAmount}
-                  variant="outlined"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      height: "42px",
-                      borderRadius: "8px",
-                      color: "white",
-                      backgroundColor: "black",
-                      border: "1px solid white",
-                      '& .MuiSelect-icon': {
-                        color: 'white',
-                      }
-                    },
-                  }}
-                  placeholder="0 ETH"
-                  className="input-field"
-                  onChange={(e) => setMintAmount(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={handleMaxClick}
-                  className="max-button"
-                >
-                  Max
-                </button>
-              </FormControl>
-            </div>
-          </div>
+      </div>
 
-          <div className="form-group-1">
-            <label htmlFor="token-select">
-            <Checkbox
-              checked={isChangedAddress}
-              onChange={(e) => setIsChangedAddress(e.target.checked)}
-              sx={{
-                color: 'white',
-                '&.Mui-checked': {
-                  color: 'white',
-                },
-              }}
+      <div className="form-group">
+        <div htmlFor="form-label">
+        <Checkbox
+          checked={isChangedAddress}
+          onChange={(e) => setIsChangedAddress(e.target.checked)}
+          sx={{
+            padding: "0",
+            paddingRight: "10px",
+            color: 'white',
+            '&.Mui-checked': {
+              color: 'white',
+              padding: "0",
+              paddingRight: "10px"
+            },
+          }}
+        />
+          Reciever wallet (optional)
+        </div>
+      </div>
+      {isChangedAddress && 
+        <div className="form-group">
+          <div className="form-input">
+            <input
+              value={recieverWalletAdress}
+              placeholder="0x..."
+              onChange={(e) => setRecieverWalletAdress(e.target.value)}
             />
-              Reciever wallet (optional)
-            </label>
-            {isChangedAddress && <FormControl fullWidth>
-              <TextField
-                id="burn-amount"
-                value={recieverWalletAdress}
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    height: "42px",
-                    borderRadius: "8px",
-                    color: "white",
-                    backgroundColor: "black",
-                    border: "1px solid white",
-                    '& .MuiSelect-icon': {
-                      color: 'white',
-                    }
-                  },
-              }}
-                placeholder="0x..."
-                className="input-field"
-                onChange={(e) => setRecieverWalletAdress(e.target.value)}
-              />
-            </FormControl>}
           </div>
-
-          {/* <p className="estimated-text">Estimated token amount: <span className="font-medium">{`${estimatedTokenAmount}`}</span></p> */}
-          <Button
-            className="submit-button"
-            disabled={mintAmount <= 0}
-            sx={{
-              borderRadius: "8px",
-              fontWeight: 700,
-              minWidth: "unset",
-              "&.Mui-disabled": {
-                backgroundColor: "rgba(1,1,1,0)",
-                borderStyle: "solid",
-                borderColor: mintAmount <= 0 ? "#949494 !important" : "transparent",
-                borderWidth: mintAmount <= 0 ? "2px" : "0",
-                color: "#949494",
-              },
-              color: "#006f16",
-              backgroundColor: "#C1FBBA",
-              textTransform: "none",
-              fontSize: "20px",
-              lineHeight: 1,
-              height: "42px"
-            }}
-            // loading={waitMint}
-            onClick={handleMint}
-          >Mint</Button>
-        </form>
-    </div>
+      </div>
+      }
+      {/* <p className="estimated-text">Estimated token amount: <span className="font-medium">{`${estimatedTokenAmount}`}</span></p> */}
+      <button
+        className="mint-greth-button button"
+        onClick={handleMint}
+      >Mint</button>
+    </form>
   );
 }
 

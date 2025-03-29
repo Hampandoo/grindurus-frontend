@@ -6,7 +6,15 @@
   margin-bottom: 50px;
 }
 
-.greth-content {
+.greth-forms {
   display: flex;
-  gap: 50px;
+  gap: 30px;
+}
+
+.greth-form-title {
+  font-size: 30px;
+}
+
+.greth-form-title:not(:last-child) {
+  margin-bottom: 20px;
 }

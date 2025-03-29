@@ -48,43 +48,39 @@ function GrinderAIChat() {
   };
 
   return (
-    <div className="chat">
-      <div className="chat-icon" onClick={toggleChatWindow}>
-        <span role="img" aria-label="robot">🤖</span>
-      </div>
-
-      {isChatOpen && (
-        <div className="chat-window">
-          <div className="chat-header">
-            <button className="close-chat" onClick={closeChat}>✖</button>
-          </div>
-          <div className="chat-messages">
-            {messages.map((m) => (
-              <div key={m.id} className={`message ${m.role}`}>
-                <span className="message-content">{m.content}</span>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="typing-indicator">
-                <span>AI is typing...</span>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-          <form onSubmit={handleSubmit} className="chat-form">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Enter the question"
-              className="chat-input"
-            />
-            <button type="submit" className="chat-submit">
-              Send
-            </button>
-          </form>
+    <section className="chat">
+      <div className="chat-container">
+      <div className="chat-window">
+        <div className="chat-header">
+          <h1 className="chat-title">Ask GrinderAI Chat</h1>
         </div>
-      )}
-    </div>
+        <div className="chat-messages">
+          {messages.map((m) => (
+            <div key={m.id} className={`message ${m.role}`}>
+              <span className="message-content">{m.content}</span>
+            </div>
+          ))}
+          {isTyping && (
+            <div className="typing-indicator">
+              <span>AI is typing...</span>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+        <form onSubmit={handleSubmit} className="chat-form">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Enter the question"
+            className="chat-input"
+          />
+          <button type="submit" className="chat-submit">
+            Send
+          </button>
+        </form>
+      </div>
+      </div>
+    </section>
   );
 }
 

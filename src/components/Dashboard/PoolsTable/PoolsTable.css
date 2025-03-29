@@ -2,6 +2,10 @@
   font-size: 16px;
 }
 
+.pools-table-title {
+  font-size: 30px;
+}
+
 .pools-table-header {
   display: flex;
   gap: 50px;
@@ -10,11 +14,11 @@
 }
 
 .pools-table-header:not(:last-child) {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 .search {
-  flex-grow: 1;
+  width: 50%;
 	display: flex;
 	border: 1px solid #fff;
 	border-radius: 8px;
@@ -22,55 +26,12 @@
 
 .search-input, .search-button {
   border: 0;
-  padding: 15px;
+  padding: 10px;
 }
 
 .search-button {
   border-left: 1px solid #fff;
-}
-
-.pools-table {
-  width: 100%;
-  border-collapse: separate; /* Меняем с collapse на separate, чтобы закругления работали */
-  border-spacing: 0; /* Убираем промежутки между ячейками */
-  border-radius: 10px; /* Общие закруглённые углы таблицы */
-  overflow: hidden; /* Убираем выход содержимого за границы */
-}
-
-/* Roundings for the top corners of the table */
-.pools-table thead tr:first-child th:first-child {
-  border-top-left-radius: 10px;
-}
-.pools-table thead tr:first-child th:last-child {
-  border-top-right-radius: 10px;
-}
-
-/* Roundings for the bottom corners of the table */
-.pools-table tbody tr:last-child td:first-child {
-  border-bottom-left-radius: 10px;
-}
-.pools-table tbody tr:last-child td:last-child {
-  border-bottom-right-radius: 10px;
-}
-
-
-/* Ячейки таблицы */
-.pools-table th, .pools-table td {
-  padding: 10px;
-  border: 1px solid #ddd; /* Граница ячеек */
-  text-align: center;
-  vertical-align: middle;
-}
-
-.pools-table th{
-  background: #fdf5f9
-}
-
-.pools-table th, .pools-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-  vertical-align: middle;
+  background-color: #933DC9;
 }
 
 .network-icon {

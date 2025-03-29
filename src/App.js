@@ -43,11 +43,13 @@ function App() {
           <Route path="/greth" element={
             <GRETH networkConfig={networkConfig}/>
           }/>
+          <Route path="/grinder-ai" element={
+            <GrinderAIChat />
+          }/>
           <Route path="/pool/:poolId" element={
             <Pool />
           }/>
         </Routes>
-        <GrinderAIChat />
       </main>
     </>
   );

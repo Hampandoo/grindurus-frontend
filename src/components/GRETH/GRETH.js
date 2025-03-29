@@ -10,14 +10,11 @@ function GRETH({ networkConfig }) {
   return (
     <div className="greth">
       <div className='greth-container'>
-        <h1 className="greth-title title">Exchange grETH to token</h1>
-        <div className="greth-content">
-          {mode == "burn" ? 
-            <GRETHBurn /> : 
+        <div className="greth-forms">
+            <GRETHBurn />
             <GRETHMint />
-          }
-          <GRETHInfo />
         </div>
+        {/* <GRETHInfo /> */}
       </div>
     </div>
   )

@@ -1,17 +1,17 @@
 .mint-nft {
-  padding: 50px 0;
-  border-bottom: 1px solid #fff;
+  padding: 50px 0 15px 0;
 }
 
 .mint-nft-container {
   display: flex;
-  gap: 50px;
+  gap: 30px;
 }
 
 .mint-nft-content {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 30px;
   width: 50%;
 }
 
@@ -21,20 +21,31 @@
 }
 
 .stat {
-  font-size: 20px;
+
 }
 
 .stat-item {
   display: flex;
 }
 
+.stat-title .stat-key {
+  display: flex;
+  justify-content: start;
+  font-size: 30px;
+  width: 100%;
+  padding: 20px;
+}
+
 .stat-item:not(:last-child) {
   border-bottom: 1px solid #fff;
 }
 
+.stat-key:not(:last-child) {
+  border-right: 1px solid #fff;
+}
+
 .stat-key {
   width: 60%;
-	border-right: 1px solid #fff;
 }
 
 .stat-value {
@@ -43,11 +54,48 @@
 
 .stat-key, .stat-value {
   text-align: center;
-	padding: 20px 15px;
+	padding: 10px;
 }
 
-.pools-table {
-  padding: 50px 0;
+.table {
+  padding: 15px 0 50px 0;
+}
+
+.table-wrapper {
+  padding: 20px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+}
+
+.table-select {
+  width: 100%;
+  display: flex;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-select:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.table-select-button {
+  padding: 10px;
+  border: 0;
+  flex: 1;
+  transition: background-color 0.3s ease;
+}
+
+.table-select-button:hover {
+  background-color: #2b2b2b;
+}
+
+.table-select-button.active {
+  background-color: #933DC9;
+}
+
+.table-select-button:not(:last-child) {
+  border-right: 1px solid #fff;
 }
 
 .mint-nft-text p {
@@ -55,4 +103,8 @@
   font-size: 16px;
   line-height: 150%;
   margin: 0;
+}
+
+.mint-form {
+  width: 50%;
 }

@@ -1,48 +1,20 @@
-/* GRETHInfo.css */
-.greth-info-container {
-  width: 100%; /* Ширина компонента */
-  height: 100%;
-  color: white; /* Основной цвет текста */
-}
-.greth-row {
-  height: 100%;
+.greth-mint-title {
+  font-size: 30px;
 }
 
-.info-card {
-  flex: 1;
-  height: 100%;
-
-  overflow: hidden;
+.greth-mint-title:not(:last-child) {
+  margin-bottom: 20px;
 }
 
-.card-content {
-  padding: 16px;
+.mint-greth-button {
+  border: 0;
+  width: 100%;
+  padding: 10px;
+  align-self: flex-end;
 }
 
-.card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-.info-list p {
-  margin: 4px 0;
-}
-
-.chart-container {
-  height: 200px;
+.greth-mint-form {
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chart-container {
-  margin-top: 20px;
-  height: 100%;
-  width: 100%;
-}
-.chart-container {
-  width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
+  flex-direction: column;
+  justify-content: space-between;
 }
